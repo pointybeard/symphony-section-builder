@@ -3,7 +3,7 @@
     "description": "SymphonyCMS Section Builder",
     "type": "library",
     "require": {
-        "pointybeard/property-bag": "dev-master",
+        "pointybeard/property-bag": "^1.0",
         "pointybeard/symphony-pdo": "^0.1",
         "php": "^5.6"
     },
