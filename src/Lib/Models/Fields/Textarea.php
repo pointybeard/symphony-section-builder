@@ -1,0 +1,55 @@
+<?php
+namespace pointybeard\Symphony\SectionBuilder\Lib\Models\Fields;
+
+use pointybeard\Symphony\SectionBuilder\Lib\AbstractField;
+use pointybeard\Symphony\SectionBuilder\Lib\Interfaces\FieldInterface;
+use pointybeard\PropertyBag\Lib;
+
+class Textarea extends AbstractField implements FieldInterface
+{
+    const TYPE = "textarea";
+    const TABLE = "tbl_fields_textarea";
+
+    public static function getFieldMappings()
+    {
+        return (object)array_merge((array)parent::getFieldMappings(), [
+            'size' => [
+                'name' => 'size',
+                'flags' => self::FLAG_INT
+            ],
+
+            'formatter' => [
+                'name' => 'formatter',
+                'flags' => self::FLAG_STR
+            ],
+
+        ]);
+    }
+
+    protected function installEntriesDataTable()
+    {
+        $sql = sprintf(
+            "CREATE TABLE IF NOT EXISTS `tbl_entries_data_%d` (
+                `id` int(11) unsigned NOT null auto_increment,
+                `entry_id` int(11) unsigned NOT null,
+                `value` MEDIUMTEXT,
+                `value_formatted` MEDIUMTEXT,
+                PRIMARY KEY  (`id`),
+                UNIQUE KEY `entry_id` (`entry_id`),
+                FULLTEXT KEY `value` (`value`)
+              ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;",
+            (int)$this->id->value
+        );
+        \Symphony::database()->exec($sql);
+        return true;
+    }
+
+    public function getDatabaseReadyData()
+    {
+        return [
+            'field_id' => (int)$this->id->value,
+            'size' => (int)$this->size->value,
+            'formatter' => (string)$this->formatter,
+        ];
+    }
+}

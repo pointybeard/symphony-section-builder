@@ -1,0 +1,23 @@
+{
+    "name": "pointybeard/symphony-section-builder",
+    "description": "SymphonyCMS Section Builder",
+    "type": "library",
+    "require": {
+        "pointybeard/property-bag": "dev-master",
+        "pointybeard/symphony-pdo": "^0.1",
+        "php": "^5.6"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alannah Kearney",
+            "email": "alannah@ruleandmake.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "pointybeard\\Symphony\\SectionBuilder\\": "src/"
+        }
+    }
+}
