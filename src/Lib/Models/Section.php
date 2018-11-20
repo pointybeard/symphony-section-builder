@@ -94,7 +94,7 @@ class Section extends AbstractTableModel
 
     public static function loadFromName($name)
     {
-        $db = \Symphony::database();
+        $db = \SymphonyPDO\Loader::instance();
 
         $query = $db->prepare(sprintf('SELECT * FROM `%s` WHERE `name` = :name LIMIT 1', self::TABLE));
         $query->bindParam(':name', $name, \PDO::PARAM_STR);
@@ -108,7 +108,7 @@ class Section extends AbstractTableModel
 
     public static function loadFromHandle($handle)
     {
-        $db = \Symphony::database();
+        $db = \SymphonyPDO\Loader::instance();
 
         $query = $db->prepare(sprintf('SELECT * FROM `%s` WHERE `handle` = :handle LIMIT 1', self::TABLE));
         $query->bindParam(':handle', $handle, \PDO::PARAM_STR);
@@ -122,7 +122,7 @@ class Section extends AbstractTableModel
 
     protected function findNextSortOrderValue()
     {
-        $query = \Symphony::database()->prepare('SELECT MAX(`sortorder`) + 1 as `value` FROM ' . self::TABLE);
+        $query = \SymphonyPDO\Loader::instance()->prepare('SELECT MAX(`sortorder`) + 1 as `value` FROM ' . self::TABLE);
         $result = $query->execute();
         return max(1, (int)$query->fetchColumn());
     }
@@ -162,7 +162,7 @@ class Section extends AbstractTableModel
     {
         $this->initiliseExistingFields();
 
-        $db = \Symphony::database();
+        $db = \SymphonyPDO\Loader::instance();
         $db->beginTransaction();
 
         try {
@@ -210,7 +210,7 @@ class Section extends AbstractTableModel
         if (!is_null($sectionId) && $this->isFieldsInitialised != true) {
             $this->isFieldsInitialised = true;
 
-            $db = \Symphony::database();
+            $db = \SymphonyPDO\Loader::instance();
             $query = $db->prepare(sprintf('SELECT `id` FROM `%s` WHERE `parent_section` = :sectionId', AbstractField::TABLE));
             $query->bindParam(':sectionId', $sectionId, \PDO::PARAM_INT);
             $result = $query->execute();

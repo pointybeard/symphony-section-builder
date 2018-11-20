@@ -39,7 +39,7 @@ class Checkbox extends AbstractField implements FieldInterface
             (int)$this->id->value,
             self::stringToEnumOnOff((string)$this->defaultState)
         );
-        \Symphony::database()->exec($sql);
+        \SymphonyPDO\Loader::instance()->exec($sql);
         return true;
     }
 

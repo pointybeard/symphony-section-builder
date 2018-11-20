@@ -79,7 +79,7 @@ abstract class AbstractField extends AbstractTableModel
 
     public static function loadFromElementName($elementName)
     {
-        $query = \Symphony::database()->prepare(sprintf(
+        $query = \SymphonyPDO\Loader::instance()->prepare(sprintf(
             'SELECT * FROM `%s` WHERE `element_name` = :elementName LIMIT 1',
             static::TABLE
         ));
@@ -90,7 +90,7 @@ abstract class AbstractField extends AbstractTableModel
 
     public static function loadFromId($id)
     {
-        $db = \Symphony::database();
+        $db = \SymphonyPDO\Loader::instance();
 
         $query = $db->prepare(sprintf(
             'SELECT * FROM `%s` WHERE `id` = :id LIMIT 1',
@@ -123,7 +123,7 @@ abstract class AbstractField extends AbstractTableModel
 
     protected function findNextSortOrderValue()
     {
-        $query = \Symphony::database()->prepare(sprintf('SELECT MAX(`sortorder`) + 1 as `value` FROM `%s` WHERE `parent_section` = %d', self::TABLE, (int)$this->sectionId->value));
+        $query = \SymphonyPDO\Loader::instance()->prepare(sprintf('SELECT MAX(`sortorder`) + 1 as `value` FROM `%s` WHERE `parent_section` = %d', self::TABLE, (int)$this->sectionId->value));
         $result = $query->execute();
         $sortOrder = (int)$query->fetchColumn();
 
@@ -159,7 +159,7 @@ abstract class AbstractField extends AbstractTableModel
 
     public function commit()
     {
-        $db = \Symphony::database();
+        $db = \SymphonyPDO\Loader::instance();
         $db->beginTransaction();
         try {
             // Save the core field data

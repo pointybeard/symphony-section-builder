@@ -46,7 +46,7 @@ class Date extends AbstractField implements FieldInterface
               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;",
             (int)$this->id->value
         );
-        \Symphony::database()->exec($sql);
+        \SymphonyPDO\Loader::instance()->exec($sql);
         return true;
     }
 

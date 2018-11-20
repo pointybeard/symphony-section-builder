@@ -98,7 +98,7 @@ abstract class AbstractTableModel extends PropertyBag
 
     public static function loadFromId($id)
     {
-        $db = \Symphony::database();
+        $db = \SymphonyPDO\Loader::instance();
 
         $query = $db->prepare(sprintf('SELECT * FROM `%s` WHERE `id` = :id LIMIT 1', static::TABLE));
         $query->bindParam(':id', $id, \PDO::PARAM_INT);
