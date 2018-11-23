@@ -11,14 +11,21 @@ abstract class AbstractField extends AbstractTableModel
     const PLACEMENT_SIDEBAR = 'sidebar';
     const TABLE = "tbl_fields";
 
-    abstract protected function installEntriesDataTable();
-
     public function __construct()
     {
         // Set up field so we don't get errors later
         foreach (self::getFieldMappings() as $m) {
             $this->{$m['name']}(null);
         }
+    }
+
+    public function installEntriesDataTable() {
+        $sql = static::getEntriesDataCreateTableSyntax();
+        return \SymphonyPDO\Loader::instance()->doInTransaction(
+            function(\SymphonyPDO\Lib\Database $db) use ($sql) {
+                return $db->exec($sql);
+            }
+        );
     }
 
     public static function getFieldMappings()
@@ -160,38 +167,31 @@ abstract class AbstractField extends AbstractTableModel
     public function commit()
     {
         $db = \SymphonyPDO\Loader::instance();
-        $db->beginTransaction();
-        try {
-            // Save the core field data
-            $id = (int)$db->insertUpdate(
-                self::getDatabaseReadyData(),
-                [
-                    'label',
-                    'element_name',
-                    'parent_section',
-                    'sortorder',
-                    'location',
-                    'show_column',
-                    'required',
-                ],
-                self::TABLE
-            );
 
-            if ($this->id->value == null) {
-                $this->id($id);
-            }
+        // Save the core field data
+        $id = $db->insertUpdate(
+            self::getDatabaseReadyData(),
+            [
+                'label',
+                'element_name',
+                'parent_section',
+                'sortorder',
+                'location',
+                'show_column',
+                'required',
+            ],
+            self::TABLE
+        );
 
-            // Save the field attributes
-            static::installEntriesDataTable();
-            $db->delete(static::TABLE, sprintf("`field_id` = %d", (int)$this->id->value));
-            $db->insert(static::getDatabaseReadyData(), static::TABLE);
-            $db->commit();
-
-            $db->commit();
-        } catch (PDOException $ex) {
-            $db->rollBack();
-            throw $ex;
+        if ($this->id->value == null) {
+            $this->id((int)$id);
         }
+
+        // Save the field attributes
+        $this->installEntriesDataTable();
+        $db->delete(static::TABLE, sprintf("`field_id` = %d", (int)$this->id->value));
+        $db->insert(static::getDatabaseReadyData(), static::TABLE);
+
         return $this;
     }
 }
