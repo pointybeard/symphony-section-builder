@@ -25,9 +25,9 @@ class Checkbox extends AbstractField implements FieldInterface
         ]);
     }
 
-    protected function installEntriesDataTable()
+    public function getEntriesDataCreateTableSyntax()
     {
-        $sql = sprintf(
+        return sprintf(
             "CREATE TABLE IF NOT EXISTS `tbl_entries_data_%d` (
               `id` int(11) unsigned NOT null auto_increment,
               `entry_id` int(11) unsigned NOT null,
@@ -39,8 +39,6 @@ class Checkbox extends AbstractField implements FieldInterface
             (int)$this->id->value,
             self::stringToEnumOnOff((string)$this->defaultState)
         );
-        \SymphonyPDO\Loader::instance()->exec($sql);
-        return true;
     }
 
     protected static function stringToEnumOnOff($string)

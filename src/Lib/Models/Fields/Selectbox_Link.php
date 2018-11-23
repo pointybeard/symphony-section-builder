@@ -56,9 +56,9 @@ class Selectbox_Link extends AbstractField implements FieldInterface
         ];
     }
 
-    protected function installEntriesDataTable()
+    public function getEntriesDataCreateTableSyntax()
     {
-        $sql = sprintf(
+        return sprintf(
             "CREATE TABLE IF NOT EXISTS `tbl_entries_data_%d` (
                 `id` int(11) unsigned NOT NULL auto_increment,
                 `entry_id` int(11) unsigned NOT NULL,
@@ -69,7 +69,5 @@ class Selectbox_Link extends AbstractField implements FieldInterface
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;",
             (int)$this->id->value
         );
-        \SymphonyPDO\Loader::instance()->exec($sql);
-        return true;
     }
 }
