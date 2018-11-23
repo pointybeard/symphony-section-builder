@@ -162,41 +162,32 @@ class Section extends AbstractTableModel
     {
         $this->initiliseExistingFields();
 
-        $db = \SymphonyPDO\Loader::instance();
-        $db->beginTransaction();
+        $id = \SymphonyPDO\Loader::instance()->insertUpdate(
+            $this->getDatabaseReadyData(),
+            [
+                'name',
+                'handle',
+                'sortorder',
+                'hidden',
+                'filter',
+                'navigation_group',
+                'modification_date',
+                'modification_date_gmt',
+            ],
+            self::TABLE
+        );
 
-        try {
-            $id = (int)$db->insertUpdate(
-                $this->getDatabaseReadyData(),
-                [
-                    'name',
-                    'handle',
-                    'sortorder',
-                    'hidden',
-                    'filter',
-                    'navigation_group',
-                    'modification_date',
-                    'modification_date_gmt',
-                ],
-                self::TABLE
-            );
-
-            if (!($this->id instanceof Lib\ImmutableProperty) && $this->id->value == null) {
-                $this->id($id);
-            }
-
-            for ($ii = 0; $ii < count($this->fields); $ii++) {
-                $this->fields[$ii]
-                    ->sectionId((int)$this->id->value)
-                    ->commit()
-                ;
-            }
-
-            $db->commit();
-        } catch (\PDOException $ex) {
-            $db->rollBack();
-            throw $ex;
+        if (!($this->id instanceof Lib\ImmutableProperty) && $this->id->value == null) {
+            $this->id((int)$id);
         }
+
+        for ($ii = 0; $ii < count($this->fields); $ii++) {
+            $this->fields[$ii]
+                ->sectionId((int)$this->id->value)
+                ->commit()
+            ;
+        }
+
         return $this;
     }
 
