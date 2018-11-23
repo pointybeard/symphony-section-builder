@@ -18,8 +18,13 @@ abstract class AbstractTableModel extends PropertyBag
     const FLAG_CURRENCY = 0x0040;
     const FLAG_IMMUTABLE = 0x0080;
     const FLAG_FIELD = 0x0100;
+    const FLAG_SECTION = 0x0200;
 
     protected static $databaseFieldMapping = [];
+
+    abstract public static function getFieldMappings();
+    abstract public function getDatabaseReadyData();
+    abstract public function commit();
 
     public function __construct()
     {
@@ -33,7 +38,6 @@ abstract class AbstractTableModel extends PropertyBag
         }
     }
 
-
     protected static function isFlagSet($flags, $flag)
     {
         // Flags support bitwise operators so it's easy to see
@@ -41,9 +45,18 @@ abstract class AbstractTableModel extends PropertyBag
         return ($flags & $flag) == $flag;
     }
 
-    abstract public static function getFieldMappings();
-    abstract public function getDatabaseReadyData();
-    abstract public function commit();
+    public function delete()
+    {
+        $table = static::TABLE;
+        $id = (int)$this->id->value;
+        \SymphonyPDO\Loader::instance()->doInTransaction(
+            function(\SymphonyPDO\Lib\Database $db) use ($table, $id) {
+                return $db->delete($table, sprintf(
+                    "`id` = %d", $id
+                ));
+            }
+        );
+    }
 
     private function getCallingMethod($depth = 2)
     {
@@ -52,22 +65,33 @@ abstract class AbstractTableModel extends PropertyBag
 
     protected static function enforceType($value, $flags)
     {
-        if (self::isFlagSet($flags, self::FLAG_BOOL)) {
-            $value = (strtolower($value) == 'yes' || $value === true);
-        } elseif (self::isFlagSet($flags, self::FLAG_INT)) {
-            $value = (int)$value;
-        } elseif (self::isFlagSet($flags, self::FLAG_STR)) {
-            $value = (string)$value;
-        } elseif (self::isFlagSet($flags, self::FLAG_FLOAT)) {
-            $value = (float)$value;
-        } elseif (self::isFlagSet($flags, self::FLAG_NULL)) {
+        if (self::isFlagSet($flags, self::FLAG_NULL)) {
             $value = empty($value) ? null : $value;
-        } elseif (self::isFlagSet($flags, self::FLAG_DATE)) {
-            $value = date('c', strtotime($value));
-        } elseif (self::isFlagSet($flags, self::FLAG_CURRENCY)) {
-            $value = (float)number_format((float)$value, 2, null, null);
-        } elseif (self::isFlagSet($flags, self::FLAG_FIELD)) {
-            $value = AbstractField::loadFromId((int)$value);
+        } else {
+            if (self::isFlagSet($flags, self::FLAG_BOOL)) {
+                $value = (strtolower($value) == 'yes' || $value === true);
+
+            } elseif (self::isFlagSet($flags, self::FLAG_INT)) {
+                $value = (int)$value;
+
+            } elseif (self::isFlagSet($flags, self::FLAG_STR)) {
+                $value = (string)$value;
+
+            } elseif (self::isFlagSet($flags, self::FLAG_FLOAT)) {
+                $value = (float)$value;
+
+            } elseif (self::isFlagSet($flags, self::FLAG_DATE)) {
+                $value = date('c', strtotime($value));
+
+            } elseif (self::isFlagSet($flags, self::FLAG_CURRENCY)) {
+                $value = (float)number_format((float)$value, 2, null, null);
+
+            } elseif (self::isFlagSet($flags, self::FLAG_FIELD)) {
+                $value = AbstractField::loadFromId((int)$value);
+
+            } elseif (self::isFlagSet($flags, self::FLAG_SECTION)) {
+                $value = Models\Section::loadFromId((int)$value);
+            }
         }
 
         return $value;
