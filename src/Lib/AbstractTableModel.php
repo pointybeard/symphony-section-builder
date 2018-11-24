@@ -49,7 +49,7 @@ abstract class AbstractTableModel extends PropertyBag
     {
         $table = static::TABLE;
         $id = (int)$this->id->value;
-        \SymphonyPDO\Loader::instance()->doInTransaction(
+        return \SymphonyPDO\Loader::instance()->doInTransaction(
             function(\SymphonyPDO\Lib\Database $db) use ($table, $id) {
                 return $db->delete($table, sprintf(
                     "`id` = %d", $id
