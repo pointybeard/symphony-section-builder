@@ -162,33 +162,72 @@ class Section extends AbstractTableModel
     {
         $this->initiliseExistingFields();
 
-        $id = \SymphonyPDO\Loader::instance()->insertUpdate(
-            $this->getDatabaseReadyData(),
-            [
-                'name',
-                'handle',
-                'sortorder',
-                'hidden',
-                'filter',
-                'navigation_group',
-                'modification_date',
-                'modification_date_gmt',
-            ],
-            self::TABLE
+        $section =& $this;
+
+        \SymphonyPDO\Loader::instance()->doInTransaction(
+            function (\SymphonyPDO\Lib\Database $db) use ($section){
+                $id = $db->insertUpdate(
+                    $section->getDatabaseReadyData(),
+                    [
+                        'name',
+                        'handle',
+                        'sortorder',
+                        'hidden',
+                        'filter',
+                        'navigation_group',
+                        'modification_date',
+                        'modification_date_gmt',
+                    ],
+                    self::TABLE
+                );
+
+                if (!($section->id instanceof Lib\ImmutableProperty) && $section->id->value == null) {
+                    $section->id((int)$id);
+                }
+
+                //Remove all existing associations for this section (childSectionId)
+                foreach($section->associations() as $a) {
+                    $a->delete();
+                }
+
+                // Save each field
+                for ($ii = 0; $ii < count($section->fields); $ii++) {
+                    $section->fields[$ii]
+                        ->sectionId((int)$section->id->value)
+                        ->commit()
+                    ;
+
+                    // Ask the field if it needs to update any associations
+                    if($section->fields[$ii]->hasAssociations()) {
+                        (new SectionAssociation)
+                            ->parentSectionId($section->fields[$ii]->associationParentSectionId())
+                            ->parentSectionFieldId($section->fields[$ii]->associationParentSectionFieldId())
+                            ->childSectionId($section->id->value)
+                            ->childSectionFieldId($section->fields[$ii]->id->value)
+                            ->commit()
+                        ;
+                    }
+
+                }
+
+                return true;
+            }
         );
 
-        if (!($this->id instanceof Lib\ImmutableProperty) && $this->id->value == null) {
-            $this->id((int)$id);
-        }
-
-        for ($ii = 0; $ii < count($this->fields); $ii++) {
-            $this->fields[$ii]
-                ->sectionId((int)$this->id->value)
-                ->commit()
-            ;
+        // Since installEntriesDataTable() would not have been called
+        // on each field (because we were inside a transaction when we called
+        // the field commit() method), we'll need to do that ourself. The only
+        // issue here is that if the query fails, we cannot rollback any of the
+        // stuff we did earlier (that transaction is long since closed).
+        foreach($this->fields as $f) {
+            $f->installEntriesDataTable();
         }
 
         return $this;
+    }
+
+    public function associations() {
+        return SectionAssociation::fetchByChildSectionId((int)$this->id->value);
     }
 
     protected function initiliseExistingFields()
