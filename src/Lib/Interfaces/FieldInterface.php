@@ -5,4 +5,5 @@ interface FieldInterface
 {
     public function commit();
     public function getEntriesDataCreateTableSyntax();
+    public function hasAssociations();
 }
