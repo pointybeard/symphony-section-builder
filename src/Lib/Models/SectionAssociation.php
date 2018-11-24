@@ -75,11 +75,21 @@ class SectionAssociation extends AbstractTableModel
     }
 
     public function parentSectionField() {
-        return $this->fetchFieldOrSection('parentSectionFieldId', preg_replace("@\\\\Models$@", '', __NAMESPACE__) . '\\AbstractField');
+        // Remove the trailing '\Models' part of the namespace for this class
+        $namespace = preg_replace("@\\\\Models$@", '', __NAMESPACE__);
+        return $this->fetchFieldOrSection(
+            'parentSectionFieldId',
+            $namespace . '\\AbstractField'
+        );
     }
 
     public function childSectionField() {
-        return $this->fetchFieldOrSection('childSectionFieldId', preg_replace("@\\\\Models$@", '', __NAMESPACE__) . '\\AbstractField');
+        // Remove the trailing \Models part of the namespace for this class
+        $namespace = preg_replace("@\\\\Models$@", '', __NAMESPACE__);
+        return $this->fetchFieldOrSection(
+            'childSectionFieldId',
+            $namespace . '\\AbstractField'
+        );
     }
 
     public function getDatabaseReadyData()
