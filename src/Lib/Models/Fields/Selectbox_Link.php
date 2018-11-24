@@ -2,13 +2,15 @@
 namespace pointybeard\Symphony\SectionBuilder\Lib\Models\Fields;
 
 use pointybeard\Symphony\SectionBuilder\Lib\AbstractField;
-use pointybeard\Symphony\SectionBuilder\Lib\Interfaces\FieldInterface;
+use pointybeard\Symphony\SectionBuilder\Lib\Interfaces;
 use pointybeard\PropertyBag\Lib;
 
-class Selectbox_Link extends AbstractField implements FieldInterface
+class Selectbox_Link extends AbstractField implements Interfaces\FieldInterface, Interfaces\FieldAssociationInterface
 {
     const TYPE = "select";
     const TABLE = "tbl_fields_selectbox_link";
+
+    use Traits\hasFetchAssociatedFieldTrait;
 
     public static function getFieldMappings()
     {
@@ -36,6 +38,14 @@ class Selectbox_Link extends AbstractField implements FieldInterface
         ]);
     }
 
+    public function associationParentSectionId(){
+        return $this->fetchAssociatedField('relatedFieldId')->sectionId->value;
+    }
+
+    public function associationParentSectionFieldId(){
+        return $this->fetchAssociatedField('relatedFieldId')->id->value;
+    }
+
     protected static function boolToEnumYesNo($value)
     {
         return $value == true ? 'yes' : 'no';
@@ -48,11 +58,7 @@ class Selectbox_Link extends AbstractField implements FieldInterface
             'allow_multiple_selection' => self::boolToEnumYesNo($this->allowMultipleSelection->value),
             'hide_when_prepopulated' => self::boolToEnumYesNo($this->hideWhenPrepopulated->value),
             'limit' => (int)$this->limit->value,
-            'related_field_id' =>
-                ($this->relatedFieldId->value instanceof AbstractField
-                    ? $this->relatedFieldId->value->id->value
-                    : $this->relatedFieldId->value)
-
+            'related_field_id' => $this->associationParentSectionFieldId()
         ];
     }
 

@@ -2,13 +2,24 @@
 namespace pointybeard\Symphony\SectionBuilder\Lib\Models\Fields;
 
 use pointybeard\Symphony\SectionBuilder\Lib\AbstractField;
-use pointybeard\Symphony\SectionBuilder\Lib\Interfaces\FieldInterface;
+use pointybeard\Symphony\SectionBuilder\Lib\Interfaces;
+use pointybeard\Symphony\SectionBuilder\Lib\Traits;
 use pointybeard\PropertyBag\Lib;
 
-class Select extends AbstractField implements FieldInterface
+class Select extends AbstractField implements Interfaces\FieldInterface, Interfaces\FieldAssociationInterface
 {
     const TYPE = "select";
     const TABLE = "tbl_fields_select";
+
+    use Traits\hasFetchAssociatedFieldTrait;
+
+    public function associationParentSectionId(){
+        return $this->fetchAssociatedField('dynamicOptions')->sectionId->value;
+    }
+
+    public function associationParentSectionFieldId(){
+        return $this->fetchAssociatedField('dynamicOptions')->id->value;
+    }
 
     public static function getFieldMappings()
     {
@@ -48,11 +59,7 @@ class Select extends AbstractField implements FieldInterface
             'allow_multiple_selection' => self::boolToEnumYesNo($this->allowMultipleSelection->value),
             'sort_options' => self::boolToEnumYesNo($this->sortOptions->value),
             'static_options' => (string)$this->staticOptions,
-            'dynamic_options' =>
-                ($this->dynamicOptions->value instanceof AbstractField
-                    ? $this->dynamicOptions->value->id->value
-                    : $this->dynamicOptions->value)
-
+            'dynamic_options' => $this->associationParentSectionFieldId()
         ];
     }
 
