@@ -3,6 +3,7 @@ namespace pointybeard\Symphony\SectionBuilder\Lib;
 
 use pointybeard\PropertyBag\Lib;
 use pointybeard\Symphony\SectionBuilder\Lib\AbstractTableModel;
+use pointybeard\Symphony\SectionBuilder\Lib\Interfaces;
 use SymphonyPDO\Lib\ResultIterator;
 
 abstract class AbstractField extends AbstractTableModel
@@ -19,13 +20,15 @@ abstract class AbstractField extends AbstractTableModel
         }
     }
 
+    public function hasAssociations() {
+        return ($this instanceof Interfaces\FieldAssociationInterface);
+    }
+
     public function installEntriesDataTable() {
-        $sql = static::getEntriesDataCreateTableSyntax();
-        return \SymphonyPDO\Loader::instance()->doInTransaction(
-            function(\SymphonyPDO\Lib\Database $db) use ($sql) {
-                return $db->exec($sql);
-            }
+        \SymphonyPDO\Loader::instance()->exec(
+            static::getEntriesDataCreateTableSyntax()
         );
+        return true;
     }
 
     public static function getFieldMappings()
@@ -166,31 +169,45 @@ abstract class AbstractField extends AbstractTableModel
 
     public function commit()
     {
-        $db = \SymphonyPDO\Loader::instance();
+        $field =& $this;
 
-        // Save the core field data
-        $id = $db->insertUpdate(
-            self::getDatabaseReadyData(),
-            [
-                'label',
-                'element_name',
-                'parent_section',
-                'sortorder',
-                'location',
-                'show_column',
-                'required',
-            ],
-            self::TABLE
+        \SymphonyPDO\Loader::instance()->doInTransaction(
+            function(\SymphonyPDO\Lib\Database $db) use ($field) {
+
+                $id = $db->insertUpdate(
+                    self::getDatabaseReadyData(),
+                    [
+                        'label',
+                        'element_name',
+                        'parent_section',
+                        'sortorder',
+                        'location',
+                        'show_column',
+                        'required',
+                    ],
+                    self::TABLE
+                );
+
+                if ($field->id->value == null) {
+                    $field->id((int)$id);
+                }
+
+                // Save the field attributes
+                $db->delete(static::TABLE, sprintf("`field_id` = %d", (int)$id));
+                $db->insert(static::getDatabaseReadyData(), static::TABLE);
+
+                return true;
+            }
         );
 
-        if ($this->id->value == null) {
-            $this->id((int)$id);
-        }
 
-        // Save the field attributes
-        $this->installEntriesDataTable();
-        $db->delete(static::TABLE, sprintf("`field_id` = %d", (int)$this->id->value));
-        $db->insert(static::getDatabaseReadyData(), static::TABLE);
+        // Make sure there is an entries data table for this field. Note this
+        // is a DDL query and will automatically end any open transaction we
+        // might have going on. We cannot call installEntriesDataTable() if that
+        // is the case. The caller will need to handle that themself.
+        if(!\SymphonyPDO\Loader::instance()->isOpenTransactions()) {
+            $field->installEntriesDataTable();
+        }
 
         return $this;
     }
