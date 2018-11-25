@@ -20,6 +20,7 @@ class Import
         }
 
         $associationsOrdered = [];
+        $lastCount = count($associations);
         while(!empty($associations)) {
             foreach($associations as $handle => $a) {
                 // Iterate over each item in $a and see if they are all in
@@ -27,6 +28,12 @@ class Import
                 $allFound = true;
                 if(!empty($a)) {
                     foreach($a as $h) {
+
+                        if($handle == $h) {
+                            // Hmm, this means the section links to itself.
+                            continue;
+                        }
+
                         if(!isset($associationsOrdered[$h])) {
                             $allFound = false;
                             break;
@@ -39,6 +46,12 @@ class Import
                     unset($associations[$handle]);
                 }
             }
+
+            if($lastCount == count($associations)) {
+                throw new \Exception("Looks like you might have a circular field dependency..." . PHP_EOL . json_encode($associations, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            }
+
+            $lastCount = count($associations);
         }
 
         // Iterate over the, now ordered, list of sections to rebuild the
@@ -99,7 +112,11 @@ class Import
                     ->dateModifiedAtGMT(gmdate('c', strtotime($s->dateModifiedAtGMT)))
                 ;
 
+                // This will help us handle circular dependancies later.
+                $deferred = [];
+
                 foreach($s->fields as $f) {
+                    $deferField = false;
 
                     $class = AbstractField::fieldTypeToClassName($f->type);
 
@@ -121,29 +138,69 @@ class Import
                                 throw new \Exception("Unable to handle field of type {$f->type}. It contains non-standard objects in the custom values object.");
                             }
 
+                            // Find the related section
                             $relatedSection = Models\Section::loadFromHandle($value->section);
-                            $relatedSection->fields();
                             if(!($relatedSection instanceof Models\Section)) {
-                                var_dump($value);
-                                die("why you do this section!!!!");
-                            }
-                            $relatedField = $relatedSection->findFieldByElementName($value->field);
-                            if(!($relatedField instanceof AbstractField)) {
-                                var_dump($value);
-                                die("why you do this field!!!!");
-                            }
+                                // This might be due to self dependency (i.e.
+                                // the relationship is from a field in this
+                                // section to another field in this section.
+                                if($value->section == $section->handle) {
+                                    // We'll shelve this dependency until the
+                                    // section has been created.
+                                    $deferred[$f->elementName] = (object)[
+                                        'property' => $key,
+                                        'relationship' => (object)[
+                                            'section' => $value->section,
+                                            'field' => $value->field,
+                                        ],
+                                        'field' => null
+                                    ];
+                                    $deferField = true;
+                                    $value = null;
 
-                            $value = $relatedField;
+                                } else {
+                                    throw new \Exception("Unable to locate section with handle {$value->section} ..." . PHP_EOL . json_encode($f->custom, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                                }
+                            } else {
+
+                                // Force the section to load up it's fields
+                                $relatedSection->fields();
+
+                                // Find the related field
+                                $relatedField = $relatedSection->findFieldByElementName($value->field);
+                                if(!($relatedField instanceof AbstractField)) {
+                                    throw new \Exception("Unable to locate field with element name {$value->field} ..." . PHP_EOL . json_encode($f->custom, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                                }
+
+                                $value = $relatedField;
+                            }
 
                         }
 
                         $field->$key($value);
                     }
 
-                    $section->addField($field);
+                    if($deferField == true) {
+                        $deferred[$f->elementName]->field = $field;
+                    } else {
+                        $section->addField($field);
+                    }
                 }
 
                 $section->commit();
+
+                // Handle deferred field relationships
+                if(!empty($deferred)) {
+                    foreach($deferred as $elementName => $d) {
+                        $d->field->{$d->property}(
+                            Models\Section::loadFromHandle($d->relationship->section)
+                            ->findFieldByElementName($d->relationship->field)
+                        );
+
+                        $section->addField($d->field)->commit();
+                    }
+                }
+
                 $result[] = $section;
             }
         }
