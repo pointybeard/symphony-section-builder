@@ -13,12 +13,25 @@ class Select extends AbstractField implements Interfaces\FieldInterface, Interfa
 
     use Traits\hasFetchAssociatedFieldTrait;
 
+    public function hasAssociations() {
+        return (
+            $this instanceof Interfaces\FieldAssociationInterface
+            && !is_null($this->dynamicOptions->value)
+        );
+    }
+
     public function associationParentSectionId(){
-        return $this->fetchAssociatedField('dynamicOptions')->sectionId->value;
+        return !is_null($this->dynamicOptions->value)
+            ? $this->fetchAssociatedField('dynamicOptions')->sectionId->value
+            : null
+        ;
     }
 
     public function associationParentSectionFieldId(){
-        return $this->fetchAssociatedField('dynamicOptions')->id->value;
+        return !is_null($this->dynamicOptions->value)
+            ? $this->fetchAssociatedField('dynamicOptions')->id->value
+            : null
+        ;
     }
 
     public static function getFieldMappings()
