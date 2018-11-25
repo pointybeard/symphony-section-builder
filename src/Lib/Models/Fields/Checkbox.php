@@ -37,7 +37,11 @@ class Checkbox extends AbstractField implements FieldInterface
               KEY `value` (`value`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;",
             (int)$this->id->value,
-            self::stringToEnumOnOff((string)$this->defaultState)
+            (
+                self::stringToEnumOnOff((string)$this->defaultState) == 'on'
+                    ? 'yes'
+                    : 'no'
+            )
         );
     }
 
