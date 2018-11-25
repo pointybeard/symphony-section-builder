@@ -4,6 +4,7 @@ namespace pointybeard\Symphony\SectionBuilder\Lib;
 use pointybeard\PropertyBag\Lib;
 use pointybeard\Symphony\SectionBuilder\Lib\AbstractTableModel;
 use pointybeard\Symphony\SectionBuilder\Lib\Interfaces;
+use pointybeard\Symphony\SectionBuilder\Lib\Models\Fields;
 use SymphonyPDO\Lib\ResultIterator;
 
 abstract class AbstractField extends AbstractTableModel
@@ -77,12 +78,12 @@ abstract class AbstractField extends AbstractTableModel
         ];
     }
 
-    protected static function fieldTypeToClassName($type)
+    public static function fieldTypeToClassName($type)
     {
         return __NAMESPACE__ . '\\Models\\Fields\\' . implode("", array_map("ucfirst", explode('_', $type)));
     }
 
-    protected static function fieldTypeToAttributeTableName($type)
+    public static function fieldTypeToAttributeTableName($type)
     {
         return "tbl_fields_{$type}";
     }
