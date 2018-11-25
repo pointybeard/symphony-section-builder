@@ -46,7 +46,7 @@ class Textarea extends AbstractField implements FieldInterface
     {
         return [
             'field_id' => (int)$this->id->value,
-            'sizde' => (int)$this->size->value,
+            'size' => (int)$this->size->value,
             'formatter' => (string)$this->formatter,
         ];
     }
