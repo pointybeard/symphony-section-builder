@@ -9,7 +9,7 @@ A set of classes that assist with the creating and updating of sections and thei
 
 ## Installation
 
-This library is installed via [Composer](http://getcomposer.org/). To install, use `composer require pointybeard/symphony-section-builder` or add `"pointybeard/pointybeard/symphony-section-builder": "~1.0"` to your `composer.json` file.
+This library is installed via [Composer](http://getcomposer.org/). To install, use `composer require pointybeard/symphony-section-builder` or add `"pointybeard/pointybeard/symphony-section-builder": "~0.1"` to your `composer.json` file.
 
 And run composer to update your dependencies:
 
