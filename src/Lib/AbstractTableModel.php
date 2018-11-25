@@ -65,8 +65,8 @@ abstract class AbstractTableModel extends PropertyBag
 
     protected static function enforceType($value, $flags)
     {
-        if (self::isFlagSet($flags, self::FLAG_NULL)) {
-            $value = empty($value) ? null : $value;
+        if (self::isFlagSet($flags, self::FLAG_NULL) && empty($value)) {
+            $value = null;
         } else {
             if (self::isFlagSet($flags, self::FLAG_BOOL)) {
                 $value = (strtolower($value) == 'yes' || $value === true);
