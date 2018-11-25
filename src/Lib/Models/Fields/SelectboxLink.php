@@ -39,21 +39,24 @@ class SelectboxLink extends AbstractField implements Interfaces\FieldInterface, 
         ]);
     }
 
-    public function hasAssociations() {
+    public function hasAssociations()
+    {
         return (
             $this instanceof Interfaces\FieldAssociationInterface
             && !is_null($this->relatedFieldId->value)
         );
     }
 
-    public function associationParentSectionId(){
+    public function associationParentSectionId()
+    {
         return !is_null($this->relatedFieldId->value)
             ? $this->fetchAssociatedField('relatedFieldId')->sectionId->value
             : null
         ;
     }
 
-    public function associationParentSectionFieldId(){
+    public function associationParentSectionFieldId()
+    {
         return !is_null($this->relatedFieldId->value)
             ? $this->fetchAssociatedField('relatedFieldId')->id->value
             : null

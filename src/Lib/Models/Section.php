@@ -165,7 +165,7 @@ class Section extends AbstractTableModel
         $section =& $this;
 
         \SymphonyPDO\Loader::instance()->doInTransaction(
-            function (\SymphonyPDO\Lib\Database $db) use ($section){
+            function (\SymphonyPDO\Lib\Database $db) use ($section) {
                 $id = $db->insertUpdate(
                     $section->getDatabaseReadyData(),
                     [
@@ -186,7 +186,7 @@ class Section extends AbstractTableModel
                 }
 
                 //Remove all existing associations for this section (childSectionId)
-                foreach($section->associations() as $a) {
+                foreach ($section->associations() as $a) {
                     $a->delete();
                 }
 
@@ -198,7 +198,7 @@ class Section extends AbstractTableModel
                     ;
 
                     // Ask the field if it needs to update any associations
-                    if($section->fields[$ii]->hasAssociations()) {
+                    if ($section->fields[$ii]->hasAssociations()) {
                         (new SectionAssociation)
                             ->parentSectionId($section->fields[$ii]->associationParentSectionId())
                             ->parentSectionFieldId($section->fields[$ii]->associationParentSectionFieldId())
@@ -207,7 +207,6 @@ class Section extends AbstractTableModel
                             ->commit()
                         ;
                     }
-
                 }
 
                 return true;
@@ -219,14 +218,15 @@ class Section extends AbstractTableModel
         // the field commit() method), we'll need to do that ourself. The only
         // issue here is that if the query fails, we cannot rollback any of the
         // stuff we did earlier (that transaction is long since closed).
-        foreach($this->fields as $f) {
+        foreach ($this->fields as $f) {
             $f->installEntriesDataTable();
         }
 
         return $this;
     }
 
-    public function associations() {
+    public function associations()
+    {
         return SectionAssociation::fetchByChildSectionId((int)$this->id->value);
     }
 

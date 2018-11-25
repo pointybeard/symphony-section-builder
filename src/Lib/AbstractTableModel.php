@@ -50,9 +50,10 @@ abstract class AbstractTableModel extends PropertyBag
         $table = static::TABLE;
         $id = (int)$this->id->value;
         return \SymphonyPDO\Loader::instance()->doInTransaction(
-            function(\SymphonyPDO\Lib\Database $db) use ($table, $id) {
+            function (\SymphonyPDO\Lib\Database $db) use ($table, $id) {
                 return $db->delete($table, sprintf(
-                    "`id` = %d", $id
+                    "`id` = %d",
+                    $id
                 ));
             }
         );
@@ -70,25 +71,18 @@ abstract class AbstractTableModel extends PropertyBag
         } else {
             if (self::isFlagSet($flags, self::FLAG_BOOL)) {
                 $value = (strtolower($value) == 'yes' || $value === true);
-
             } elseif (self::isFlagSet($flags, self::FLAG_INT)) {
                 $value = (int)$value;
-
             } elseif (self::isFlagSet($flags, self::FLAG_STR)) {
                 $value = (string)$value;
-
             } elseif (self::isFlagSet($flags, self::FLAG_FLOAT)) {
                 $value = (float)$value;
-
             } elseif (self::isFlagSet($flags, self::FLAG_DATE)) {
                 $value = date('c', strtotime($value));
-
             } elseif (self::isFlagSet($flags, self::FLAG_CURRENCY)) {
                 $value = (float)number_format((float)$value, 2, null, null);
-
             } elseif (self::isFlagSet($flags, self::FLAG_FIELD)) {
                 $value = AbstractField::loadFromId((int)$value);
-
             } elseif (self::isFlagSet($flags, self::FLAG_SECTION)) {
                 $value = Models\Section::loadFromId((int)$value);
             }

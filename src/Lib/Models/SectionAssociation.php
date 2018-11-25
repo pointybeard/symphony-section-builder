@@ -58,7 +58,8 @@ class SectionAssociation extends AbstractTableModel
         ];
     }
 
-    private function fetchFieldOrSection($field, $type) {
+    private function fetchFieldOrSection($field, $type)
+    {
         return (
             $this->$field->value instanceof $type
                 ? $this->$field->value
@@ -66,15 +67,18 @@ class SectionAssociation extends AbstractTableModel
         );
     }
 
-    public function parentSection() {
+    public function parentSection()
+    {
         return $this->fetchFieldOrSection('parentSectionId', __NAMESPACE__ . '\\Section');
     }
 
-    public function childSection() {
+    public function childSection()
+    {
         return $this->fetchFieldOrSection('childSectionId', __NAMESPACE__ . '\\Section');
     }
 
-    public function parentSectionField() {
+    public function parentSectionField()
+    {
         // Remove the trailing '\Models' part of the namespace for this class
         $namespace = preg_replace("@\\\\Models$@", '', __NAMESPACE__);
         return $this->fetchFieldOrSection(
@@ -83,7 +87,8 @@ class SectionAssociation extends AbstractTableModel
         );
     }
 
-    public function childSectionField() {
+    public function childSectionField()
+    {
         // Remove the trailing \Models part of the namespace for this class
         $namespace = preg_replace("@\\\\Models$@", '', __NAMESPACE__);
         return $this->fetchFieldOrSection(
@@ -130,7 +135,7 @@ class SectionAssociation extends AbstractTableModel
         $data = self::getDatabaseReadyData();
         $table = self::TABLE;
         \SymphonyPDO\Loader::instance()->doInTransaction(
-            function(\SymphonyPDO\Lib\Database $db) use ($table, $data) {
+            function (\SymphonyPDO\Lib\Database $db) use ($table, $data) {
                 $db->delete($table, sprintf(
                     "`child_section_id` = %d AND `child_section_field_id` = %d",
                     $data['child_section_id'],
