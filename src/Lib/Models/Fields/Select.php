@@ -54,7 +54,7 @@ class Select extends AbstractField implements Interfaces\FieldInterface, Interfa
 
             'dynamic_options' => [
                 'name' => 'dynamicOptions',
-                'flags' => self::FLAG_FIELD
+                'flags' => self::FLAG_FIELD | self::FLAG_NULL
             ],
 
         ]);
