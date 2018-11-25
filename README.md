@@ -1,6 +1,6 @@
 # Symphony CMS: Section Builder
 
-- Version: v0.1.1
+- Version: v0.1.2
 - Date: November 25th 2018
 - [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
 - [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
@@ -20,6 +20,7 @@ And run composer to update your dependencies:
 
 Quick example of how to use this library:
 
+```php
     use pointybeard\Symphony\SectionBuilder\Lib;
 
     try {
@@ -105,6 +106,70 @@ Quick example of how to use this library:
     } catch (\Exception $ex) {
         print "FAILED: " . $ex->getMessage() . PHP_EOL;
     }
+```
+
+### Importing JSON
+
+```php
+    use pointybeard\Symphony\SectionBuilder\Lib;
+
+    try {
+        Lib\Import::fromJsonFile("/path/to/some/file.json");
+        print "Success!!" . PHP_EOL;
+
+    } catch (\Exception $ex) {
+        print "FAILED: " . $ex->getMessage() . PHP_EOL;
+        var_dump($ex); die;
+    }
+```
+
+JSON must be an array of sections and look like this:
+
+```json
+    {
+        "sections": [
+            {
+                "name": "Providers",
+                "handle": "providers",
+                "sortOrder": 39,
+                "hideFromBackendNavigation": false,
+                "allowFiltering": false,
+                "navigationGroup": "Shipping",
+                "authorId": 1,
+                "modificationAuthorId": 1,
+                "dateCreatedAt": "2018-11-01 14:21:07",
+                "dateCreatedAtGMT": "2018-11-01 04:21:07",
+                "dateModifiedAt": "2018-11-01 14:21:07",
+                "dateModifiedAtGMT": "2018-11-01 04:21:07",
+                "associations": [],
+                "fields": [
+                    {
+                        "label": "Name",
+                        "elementName": "name",
+                        "type": "input",
+                        "required": true,
+                        "sortOrder": 0,
+                        "location": "sidebar",
+                        "showColumn": true,
+                        "custom": {
+                            "validator": null
+                        }
+                    },
+                    {
+                        "label": "UUID",
+                        "elementName": "uuid",
+                        "type": "uuid",
+                        "required": true,
+                        "sortOrder": 1,
+                        "location": "sidebar",
+                        "showColumn": true,
+                        "custom": []
+                    }
+                ]
+            }
+        ]
+    }
+```
 
 ## Support
 
