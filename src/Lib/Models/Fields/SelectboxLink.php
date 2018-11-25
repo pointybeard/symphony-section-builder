@@ -3,11 +3,12 @@ namespace pointybeard\Symphony\SectionBuilder\Lib\Models\Fields;
 
 use pointybeard\Symphony\SectionBuilder\Lib\AbstractField;
 use pointybeard\Symphony\SectionBuilder\Lib\Interfaces;
+use pointybeard\Symphony\SectionBuilder\Lib\Traits;
 use pointybeard\PropertyBag\Lib;
 
-class Selectbox_Link extends AbstractField implements Interfaces\FieldInterface, Interfaces\FieldAssociationInterface
+class SelectboxLink extends AbstractField implements Interfaces\FieldInterface, Interfaces\FieldAssociationInterface
 {
-    const TYPE = "select";
+    const TYPE = "selectbox_link";
     const TABLE = "tbl_fields_selectbox_link";
 
     use Traits\hasFetchAssociatedFieldTrait;
@@ -38,12 +39,25 @@ class Selectbox_Link extends AbstractField implements Interfaces\FieldInterface,
         ]);
     }
 
+    public function hasAssociations() {
+        return (
+            $this instanceof Interfaces\FieldAssociationInterface
+            && !is_null($this->relatedFieldId->value)
+        );
+    }
+
     public function associationParentSectionId(){
-        return $this->fetchAssociatedField('relatedFieldId')->sectionId->value;
+        return !is_null($this->relatedFieldId->value)
+            ? $this->fetchAssociatedField('relatedFieldId')->sectionId->value
+            : null
+        ;
     }
 
     public function associationParentSectionFieldId(){
-        return $this->fetchAssociatedField('relatedFieldId')->id->value;
+        return !is_null($this->relatedFieldId->value)
+            ? $this->fetchAssociatedField('relatedFieldId')->id->value
+            : null
+        ;
     }
 
     protected static function boolToEnumYesNo($value)
