@@ -13,6 +13,32 @@ class Section extends AbstractTableModel
     protected $isFieldsInitialised = false;
     const TABLE = 'tbl_sections';
 
+    public function __toArray() {
+        $mapping = self::getFieldMappings();
+        $data = $this->getDatabaseReadyData();
+
+        $output = [
+            "fields" => [],
+            "associations" => []
+        ];
+
+        foreach($mapping as $name => $properties) {
+            // Add this to the start of the array.
+            $output = [
+                $properties['name'] => $this->{$properties['name']}->value
+            ] + $output;
+        }
+
+        foreach($this->fields() as $f) {
+            $output['fields'][] = $f->__toArray();
+        }
+
+        foreach($this->associations() as $a) {
+            $output['associations'][] = $a->__toArray();
+        }
+        return $output;
+    }
+
     public static function getFieldMappings()
     {
         return (object)[

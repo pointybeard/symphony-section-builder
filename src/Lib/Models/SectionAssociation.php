@@ -58,6 +58,26 @@ class SectionAssociation extends AbstractTableModel
         ];
     }
 
+    public function __toArray() {
+        $mapping = self::getFieldMappings();
+        $data = $this->getDatabaseReadyData();
+        return [
+            "hideAssociation" => $this->hideAssociation->value,
+            "interface" => $this->interface->value,
+            "editor" => $this->editor->value,
+
+            "parent" => [
+                "section" => (string)$this->parentSection()->handle,
+                "field" => (string)$this->parentSectionField()->elementName
+            ],
+
+            "child" => [
+                "section" => (string)$this->childSection()->handle,
+                "field" => (string)$this->childSectionField()->elementName
+            ]
+        ];
+    }
+
     private function fetchFieldOrSection($field, $type)
     {
         return (

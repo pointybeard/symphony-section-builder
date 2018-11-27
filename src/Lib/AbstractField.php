@@ -5,9 +5,11 @@ use pointybeard\PropertyBag\Lib;
 use pointybeard\Symphony\SectionBuilder\Lib\AbstractTableModel;
 use pointybeard\Symphony\SectionBuilder\Lib\Interfaces;
 use pointybeard\Symphony\SectionBuilder\Lib\Models\Fields;
+use pointybeard\Symphony\SectionBuilder\Lib as SectionBuilder;
+
 use SymphonyPDO\Lib\ResultIterator;
 
-abstract class AbstractField extends AbstractTableModel
+abstract class AbstractField extends SectionBuilder\AbstractTableModel
 {
     const PLACEMENT_MAIN_CONTENT = 'main';
     const PLACEMENT_SIDEBAR = 'sidebar';
@@ -32,6 +34,43 @@ abstract class AbstractField extends AbstractTableModel
             static::getEntriesDataCreateTableSyntax()
         );
         return true;
+    }
+
+    public function __toArray() {
+        $mapping = static::getFieldMappings();
+        $baseData = self::getDatabaseReadyData();
+        $customData = static::getDatabaseReadyData();
+
+        $output = [
+            'custom' => []
+        ];
+        foreach($mapping as $name => $properties) {
+            if(isset($baseData[$name])) {
+                // Add this to the start of the array.
+                $output = [
+                    $properties['name'] => $this->{$properties['name']}->value
+                ] + $output;
+            } elseif(isset($customData[$name])) {
+                if(SectionBuilder\AbstractTableModel::isFlagSet($properties['flags'], self::FLAG_FIELD)) {
+                    $associatedField = $this->fetchAssociatedField($properties['name']);
+                    $output['custom'][$properties['name']] = [
+                        "section" => (string)$associatedField->section()->handle,
+                        "field" => (string)$associatedField->elementName,
+                    ];
+                } else {
+                    $output['custom'][$properties['name']] = $this->{$properties['name']}->value;
+                }
+            }
+        }
+
+        return $output;
+    }
+
+    public function section() {
+        if($this->sectionId->value == null) {
+            return false;
+        }
+        return SectionBuilder\Models\Section::loadFromId($this->sectionId->value);
     }
 
     public static function getFieldMappings()
