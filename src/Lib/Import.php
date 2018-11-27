@@ -91,7 +91,13 @@ class Import
 
         // @todo: Validate json against schema
 
-        $sections = self::orderSectionsByAssociations($json->sections);
+        return self::fromObject($json);
+    }
+
+
+    public static function fromObject(\StdClass $data) {
+
+        $sections = self::orderSectionsByAssociations($data->sections);
 
         $result = [];
 
