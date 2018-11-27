@@ -20,11 +20,14 @@ abstract class AbstractTableModel extends PropertyBag
     const FLAG_FIELD = 0x0100;
     const FLAG_SECTION = 0x0200;
 
+    use Traits\hasToStringToJsonTrait;
+
     protected static $databaseFieldMapping = [];
 
     abstract public static function getFieldMappings();
     abstract public function getDatabaseReadyData();
     abstract public function commit();
+    abstract public function __toArray();
 
     public function __construct()
     {
@@ -112,6 +115,19 @@ abstract class AbstractTableModel extends PropertyBag
             //}
         }
         return parent::__set($name, $value);
+    }
+
+    public static function all()
+    {
+        $db = \SymphonyPDO\Loader::instance();
+
+        $query = $db->prepare(sprintf('SELECT * FROM `%s`', static::TABLE));
+        $result = $query->execute();
+
+        return (new ResultIterator(
+            get_called_class(),
+            $query
+        ));
     }
 
     public static function loadFromId($id)
