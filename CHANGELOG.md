@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.2 - 2018-11-28
+#### Added
+* Implemented `__toArray()` abstract method in Section, AbstractField, and SectionAssociation models
+* Added `hasToStringToJsonTrait` Trait. This provides `__toJson()` and `__toString()`
+* Added `fromObject()` method, and moved code from the `fromJson()` method into `fromObject()` in the Import class
+* Added abstract `__toArray()` method, `all()` method in `AbstractTableModel`
+* Using `hasToStringToJsonTrait` Trait in `AbstractTableModel` which allow means `__toJson()` and `__toString()` trickle down to AbstractField, Section, and SectionAssociation
+
 ## 0.1.2 - 2018-11-25
 #### Added
 Added additional field models: Order ID, Primary Entry, and Reverse Regex

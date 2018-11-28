@@ -1,7 +1,7 @@
 # Symphony CMS: Section Builder
 
-- Version: v0.1.2
-- Date: November 25th 2018
+- Version: v0.1.3
+- Date: November 28th 2018
 - [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
 - [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
 
@@ -170,6 +170,35 @@ JSON must be an array of sections and look like this:
         ]
     }
 ```
+
+### Exporting
+
+Exporting can be done using the `__toString()`, `__toJson()`, and/or `__toArray()` methods provided by `AbstractField` and `Section`. For example:
+
+```php
+    use pointybeard\Symphony\SectionBuilder\Lib;
+    $section = Lib\Models\Section::loadFromHandle('categories');
+
+    print (string)$section;
+    print $section->__toJson();
+    print_r($section->__toArray());
+
+```
+
+If a full export is necessary, use the `all()` method and build the array before encoding it to JSON. e.g.
+
+```php
+    $output = ["sections" => []];
+    foreach(Lib\Models\Section::all() as $section) {
+        // We use json_decode() to ensure ids (id and sectionId) are removed
+        // from the output. To keep ids, use __toArray()
+        $output["sections"][] = json_decode((string)$section, true);
+    }
+
+    print json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+```
+
+Note that IDs (specifically Section and Field `id` and Field `sectionId` properties) are automatically stripped out by `__toString()` and `__toJson()`. To keep them, either use `__toArray()` and encode to JSON yourself, or using `__toJson()` but set `$excludeIds` to false. e.g. `$section->__toJson(false)`. See this implementation in the Trait `hasToStringToJsonTrait`.
 
 ## Support
 
