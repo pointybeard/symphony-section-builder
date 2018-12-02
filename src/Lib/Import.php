@@ -100,7 +100,6 @@ class Import
         $sections = self::orderSectionsByAssociations($data->sections);
 
         $result = [];
-
         foreach ($sections as $s) {
             $section = Models\Section::loadFromHandle($s->handle);
             if (!($section instanceof Models\Section)) {
@@ -126,6 +125,10 @@ class Import
                     $deferField = false;
 
                     $class = AbstractField::fieldTypeToClassName($f->type);
+
+                    if(!class_exists($class)) {
+                        throw new \Exception("Unable to locate Field model class for field type {$f->type}.");
+                    }
 
                     $field = (new $class)
                         ->label($f->label)
