@@ -1,0 +1,159 @@
+#!/usr/bin/env php
+<?php
+// This just avoids PHP notices from not having a DOCROOT set.
+define("DOCROOT", realpath(__DIR__ . '/../'));
+
+include DOCROOT . '/vendor/autoload.php';
+
+use CLILib\Argument;
+use CLILib\Message;
+use CLILib\Prompt;
+
+use SymphonyPDO\Loader as SymphonyPDO;
+use pointybeard\Symphony\SectionBuilder\Lib;
+
+$args = new Argument\Iterator;
+
+function usage() {
+    printf (PHP_EOL . "import 1.0.0, generate SymphonyCMS sections from a JSON file
+    Usage: import [OPTION]..
+
+Basics:
+  -h,  --help, --usage      print this help information
+  -m, --manifest            Path to the manifest folder containing a config.php
+                              file for install of SymphonyCMS to compare
+  -j, --json                Path of JSON file to use for comparison.
+
+Database Settings:
+  --database-name=STRING           name of the database to use
+  --database-user=STRING           name of database user
+  --database-password=PASS         password for project database user. Will prompt
+                                    if ommitted.
+  --database-table-prefix=STRING    the prefix for all tables in this project.
+                                     Default is 'tbl_'
+  --database-host=IP_ADDRESS       host IP of database to use for deployment.
+                                    Default is 127.0.0.1
+  --database-port=PORT             port number of database server. Default is 3306.
+
+Examples:
+... import --json=/path/to/file.json -m /path/to/manifest" . PHP_EOL . PHP_EOL);
+    exit;
+}
+
+if ($args->find(['h', 'help', 'usage'])) {
+    usage();
+}
+
+$manifest = null;
+$json = null;
+$databaseCredentials = [
+    'host' => "127.0.0.1",
+    'port' => "3306",
+    'db' => null,
+    'user' => null,
+    'password' =>  null,
+    'tbl_prefix' => "tbl_"
+];
+
+$json = $args->find(['j', 'json']);
+if (!($json instanceof Argument) || strlen(trim($json->value())) == 0) {
+    (new Message)
+        ->message("ERROR - No input provided. Use -j or --json to specify JSON file.")
+        ->prependDate(false)
+        ->foreground("red")
+        ->display()
+    ;
+    exit;
+} elseif (!is_readable($json->value())) {
+    (new Message)
+        ->message(sprintf(
+            "ERROR - The file '%s' is not readable.",
+            $json->value()
+        ))
+        ->prependDate(false)
+        ->foreground("red")
+        ->display()
+    ;
+    exit;
+}
+
+$manifest = $args->find(['m', 'manifest']);
+if($manifest instanceof Argument) {
+    $config = realpath($manifest->value()) . DIRECTORY_SEPARATOR . "config.php";
+    if (!is_readable($config)) {
+        (new Message)
+            ->message(sprintf(
+                "ERROR - no config file found in %s.",
+                $manifest->value()
+            ))
+            ->prependDate(false)
+            ->foreground("red")
+            ->display()
+        ;
+        exit;
+    }
+    include $config;
+    $databaseCredentials = array_merge($databaseCredentials, $settings['database']);
+} else {
+    $creds = [
+        'db' => $args->find('database-name'),
+        'user' => $args->find('database-user'),
+        'password' => $args->find('database-password'),
+        'tbl_prefix' => $args->find('database-table-prefix'),
+        'host' => $args->find('database-host'),
+        'port' => $args->find('database-port'),
+    ];
+
+    foreach($creds as $key => $value) {
+        if(!($value instanceof Argument)) {
+            unset($creds[$key]);
+        } else {
+            $creds[$key] = (string)$value;
+        }
+    }
+
+    $databaseCredentials = array_merge($databaseCredentials, $creds);
+}
+
+// Check we have all the DB credentials we need
+if(is_null($databaseCredentials['user'])) {
+    (new Message)
+        ->message("ERROR - Database user not specified. Use --database-user or -m.")
+        ->prependDate(false)
+        ->foreground("red")
+        ->display()
+    ;
+    exit;
+}elseif(is_null($databaseCredentials['db'])) {
+    (new Message)
+        ->message("ERROR - Database name not specified. Use --database-name or -m.")
+        ->prependDate(false)
+        ->foreground("red")
+        ->display()
+    ;
+    exit;
+}
+
+// Ask for password if there hasn't been one set
+if(is_null($databaseCredentials['password'])) {
+    $databaseCredentials['password'] = Prompt::display(
+        "Enter password for database user '{$databaseCredentials['user']}'",
+        Prompt::FLAG_SILENT)
+    ;
+}
+
+try {
+    SymphonyPDO::instance((object)$databaseCredentials);
+    Lib\Import::fromJsonFile($json->value());
+} catch (\Exception $ex) {
+    (new Message)
+        ->message(sprintf(
+            "ERROR - unable to import. Returned: %s",
+            $ex->getMessage()
+        ))
+        ->prependDate(false)
+        ->foreground("red")
+        ->display()
+    ;
+    print($ex->xdebug_message);
+}
