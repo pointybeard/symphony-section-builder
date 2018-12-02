@@ -1,0 +1,3760 @@
+{
+    "sections": [
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Clients",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 1,
+            "handle": "clients",
+            "name": "Clients",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "created-at",
+                    "label": "Created At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "email-address",
+                    "label": "Email Address",
+                    "custom": {
+                        "validator": "/^\\w(?:\\.?[\\w%+-]+)*@\\w(?:[\\w-]*\\.)+?[a-z]{2,}$/i"
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "modified-at",
+                    "label": "Modified At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Clients",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": true,
+            "sortOrder": 2,
+            "handle": "surveys",
+            "name": "Surveys",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "completed-at",
+                    "label": "Date Completed",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "created-at",
+                    "label": "Date Created",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "modified-at",
+                    "label": "Date Modified",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "surveys",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-08-19T01:17:47+00:00",
+            "dateCreatedAt": "2018-08-19T11:17:47+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Campaign",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 3,
+            "handle": "kickstarter-records",
+            "name": "Kickstarter Records",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": true,
+                        "limit": 25,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "backer-number",
+                    "label": "Backer Number",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "backer-uid",
+                    "label": "Backer UID",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "kickstarter-records",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Campaign",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 4,
+            "handle": "assets",
+            "name": "Some Assets",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "available",
+                    "label": "Available",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "file",
+                    "label": "File",
+                    "custom": {
+                        "destination": "/secure",
+                        "validator": "/\\.(?:bmp|gif|jpe?g|png|docx?|pdf|rtf|txt|zip|tar|gz|epub|mobi)$/i"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "sync-date",
+                    "label": "Sync Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "sync-status",
+                    "label": "Sync Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": false,
+                        "staticOptions": "queued,complete,error"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 5,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Campaign",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 5,
+            "handle": "news",
+            "name": "News",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "body",
+                    "label": "Body",
+                    "custom": {
+                        "size": 15,
+                        "formatter": "markdown"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "date",
+                    "label": "Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "kickstarter-post-identifier",
+                    "label": "Kickstarter Post Identifier",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 5,
+                    "elementName": "title",
+                    "label": "Title",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "url",
+                    "label": "URL",
+                    "custom": {
+                        "validator": "/^[^\\s:\\/?#]+:(?:\\/{2,3})?[^\\s.\\/?#]+(?:\\.[^\\s.\\/?#]+)*(?:\\/?[^\\s?#]*\\??[^\\s?#]*(#[^\\s#]*)?)?$/"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-27T06:30:49+00:00",
+            "dateCreatedAt": "2017-09-27T16:30:49+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Campaign",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": true,
+            "sortOrder": 6,
+            "handle": "read-receipts",
+            "name": "Read Receipts",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "news",
+                    "label": "News",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "news",
+                            "field": "date"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "read-at",
+                    "label": "Read At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "read-receipts",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Pledges",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 7,
+            "handle": "pledge-rewards",
+            "name": "Rewards",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "default",
+                    "label": "Is default reward?",
+                    "custom": {
+                        "defaultState": "off",
+                        "autoToggle": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Pledges",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 8,
+            "handle": "pledges",
+            "name": "Pledges",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": true,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 8,
+                    "elementName": "spilling-country",
+                    "label": "Spilling Country",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 7,
+                    "elementName": "billing-state",
+                    "label": "Billing State",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 10,
+                    "elementName": "notes",
+                    "label": "Notes",
+                    "custom": {
+                        "size": 10,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "pledge-amount",
+                    "label": "Pledge Amount",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 6,
+                    "elementName": "pledge-status",
+                    "label": "Pledge Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": true,
+                        "staticOptions": "collected, errored "
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "pledged-at",
+                    "label": "Pledged At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 11,
+                    "elementName": "reward",
+                    "label": "Reward",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": true,
+                        "staticOptions": "",
+                        "dynamicOptions": {
+                            "section": "pledge-rewards",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "reward-minimum",
+                    "label": "Reward Minimum",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 3,
+                    "elementName": "shipping-amount",
+                    "label": "Shipping Amount",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 4,
+                    "elementName": "shipping-country",
+                    "label": "Shipping Country",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 9,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "pledges",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Pledges",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 9,
+            "handle": "pledge-adjustments",
+            "name": "Adjustments",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "amount",
+                    "label": "Amount",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "date",
+                    "label": "Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "notes",
+                    "label": "Notes",
+                    "custom": {
+                        "size": 5,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "pledge",
+                    "label": "Pledge",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "pledges",
+                            "field": "uuid"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "type",
+                    "label": "Type",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": true,
+                        "staticOptions": "General,Shipping"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "pledges",
+                        "field": "uuid"
+                    },
+                    "child": {
+                        "section": "pledge-adjustments",
+                        "field": "pledge"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Surveys",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 10,
+            "handle": "questions",
+            "name": "Questions",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "can-modify",
+                    "label": "Can backers modify their answer?",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "hideFromBackendNavigation",
+                    "label": "hideFromBackendNavigation",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "notes",
+                    "label": "Notes",
+                    "custom": {
+                        "size": 5,
+                        "formatter": "markdown_with_purifier"
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "original",
+                    "label": "Original",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "question",
+                    "label": "Question",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Surveys",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": true,
+            "sortOrder": 11,
+            "handle": "question-options",
+            "name": "Question Options",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "question",
+                    "label": "Question",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "questions",
+                            "field": "question"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "value",
+                    "label": "Value",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "questions",
+                        "field": "question"
+                    },
+                    "child": {
+                        "section": "question-options",
+                        "field": "question"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Surveys",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 13,
+            "handle": "answers",
+            "name": "Answers",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "created-at",
+                    "label": "Created Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "modified-at",
+                    "label": "Modified Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "question",
+                    "label": "Question",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 50,
+                        "relatedFieldId": {
+                            "section": "questions",
+                            "field": "question"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "survey",
+                    "label": "Survey",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "surveys",
+                            "field": "completed-at"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 5,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "value",
+                    "label": "Value",
+                    "custom": {
+                        "size": 5,
+                        "formatter": ""
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "questions",
+                        "field": "question"
+                    },
+                    "child": {
+                        "section": "answers",
+                        "field": "question"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-04-23T23:14:32+00:00",
+            "dateCreatedAt": "2018-04-24T09:14:32+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Email",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 18,
+            "handle": "email-template-fields",
+            "name": "Template Fields",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "default-value",
+                    "label": "Default Value",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Support",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 20,
+            "handle": "support-categories",
+            "name": "Categories",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "date-created-at",
+                    "label": "Created At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-23T15:47:09+00:00",
+            "dateModifiedAt": "2018-10-24T01:47:09+00:00",
+            "dateCreatedAtGMT": "2018-10-09T00:47:22+00:00",
+            "dateCreatedAt": "2018-10-09T10:47:22+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Support",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 21,
+            "handle": "support-images",
+            "name": "Images",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "date-created-at",
+                    "label": "Date Created At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "image",
+                    "label": "Image",
+                    "custom": {
+                        "destination": "/support",
+                        "validator": "/\\.(?:bmp|gif|jpe?g|png)$/i"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-11-02T04:48:03+00:00",
+            "dateModifiedAt": "2018-11-02T14:48:03+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 24,
+            "handle": "products",
+            "name": "Products",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 26,
+                    "elementName": "available",
+                    "label": "Available to Purchase",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 23,
+                    "elementName": "created-at",
+                    "label": "Created At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 17,
+                    "elementName": "description",
+                    "label": "Description",
+                    "custom": {
+                        "size": 5,
+                        "formatter": "markdown_with_purifier"
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 25,
+                    "elementName": "download",
+                    "label": "Downloadable Content",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 100,
+                        "relatedFieldId": {
+                            "section": "assets",
+                            "field": "file"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 20,
+                    "elementName": "image",
+                    "label": "Image (450px min wide)",
+                    "custom": {
+                        "destination": "/public",
+                        "validator": "/\\.(?:bmp|gif|jpe?g|png)$/i"
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 21,
+                    "elementName": "is-bundle",
+                    "label": "Bundle",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 27,
+                    "elementName": "limit-availability-to-pledge-reward",
+                    "label": "Limit Availability to Pledge Reward",
+                    "custom": {
+                        "allowMultipleSelection": true,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "pledge-rewards",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 19,
+                    "elementName": "limit-per-backer",
+                    "label": "Limit Per Backer",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 30,
+                    "elementName": "linked",
+                    "label": "Linked Products",
+                    "custom": {
+                        "allowMultipleSelection": true,
+                        "hideWhenPrepopulated": false,
+                        "limit": 100,
+                        "relatedFieldId": {
+                            "section": "products",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 24,
+                    "elementName": "modified-at",
+                    "label": "Modified At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 15,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 18,
+                    "elementName": "price",
+                    "label": "Price",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 29,
+                    "elementName": "requires-shipping",
+                    "label": "Requires Shipping",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 28,
+                    "elementName": "shippable-weight",
+                    "label": "Shippable Weight",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 16,
+                    "elementName": "sku",
+                    "label": "SKU",
+                    "custom": {
+                        "validator": "",
+                        "autoUnique": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 22,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "assets",
+                        "field": "file"
+                    },
+                    "child": {
+                        "section": "products",
+                        "field": "download"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-01-28T06:43:49+00:00",
+            "dateCreatedAt": "2018-01-28T16:43:49+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 26,
+            "handle": "carts",
+            "name": "Carts",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "created-at",
+                    "label": "Created At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "modified-at",
+                    "label": "Modified At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "shipping-cost",
+                    "label": "Shipping Cost",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "status",
+                    "label": "Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": false,
+                        "staticOptions": "Active,Pending,Finalised,Cancelled,Expired,Failed"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "carts",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-11-09T23:53:03+00:00",
+            "dateModifiedAt": "2018-11-10T09:53:03+00:00",
+            "dateCreatedAtGMT": "2018-01-28T07:17:34+00:00",
+            "dateCreatedAt": "2018-01-28T17:17:34+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 27,
+            "handle": "cart-items",
+            "name": "Cart Items",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "cart",
+                    "label": "Cart",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "carts",
+                            "field": "uuid"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 6,
+                    "elementName": "modified-at",
+                    "label": "Date Modified",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "price",
+                    "label": "Price",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "product",
+                    "label": "Product",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "products",
+                            "field": "sku"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "quantity",
+                    "label": "Quantity",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "subtotal",
+                    "label": "Subtotal",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "carts",
+                        "field": "uuid"
+                    },
+                    "child": {
+                        "section": "cart-items",
+                        "field": "cart"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-24T13:21:35+00:00",
+            "dateModifiedAt": "2018-10-24T23:21:35+00:00",
+            "dateCreatedAtGMT": "2018-09-25T23:13:08+00:00",
+            "dateCreatedAt": "2018-09-26T09:13:08+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 28,
+            "handle": "currencies",
+            "name": "Currencies",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "code",
+                    "label": "Code",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "primary",
+                    "label": "Primary",
+                    "custom": {
+                        "defaultState": "off",
+                        "autoToggle": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "sign",
+                    "label": "Sign",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": false,
+                        "staticOptions": "$,\u20ac,\u00a3,\u00a5"
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-09-25T23:57:59+00:00",
+            "dateCreatedAt": "2018-09-26T09:57:59+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 29,
+            "handle": "payment-methods",
+            "name": "Payment Methods",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-09-29T12:14:09+00:00",
+            "dateCreatedAt": "2018-09-29T22:14:09+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Shipping",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 33,
+            "handle": "shipping-weight-tiers",
+            "name": "Weight Tiers",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "maximum",
+                    "label": "Maximum",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "minimum",
+                    "label": "Minimum",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Activity & Statistics",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 34,
+            "handle": "sessions",
+            "name": "Sessions",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "created-at",
+                    "label": "Created At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "expires-at",
+                    "label": "Expires At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "last-seen-at",
+                    "label": "Last Seen At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "token",
+                    "label": "Token",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "sessions",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Activity & Statistics",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 35,
+            "handle": "asset-downloads",
+            "name": "Asset Downloads",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "asset",
+                    "label": "Asset",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "assets",
+                            "field": "file"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "date",
+                    "label": "Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 5,
+                    "elementName": "link",
+                    "label": "Link",
+                    "custom": {
+                        "size": 2,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 4,
+                    "elementName": "payload",
+                    "label": "Payload",
+                    "custom": {
+                        "size": 25,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "status",
+                    "label": "Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": false,
+                        "staticOptions": "served,partial,not found,forbidden,unauthorised,bad request,gone"
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "asset-downloads",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Activity & Statistics",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 36,
+            "handle": "cdn-sync-log",
+            "name": "CDN Sync Log",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "asset",
+                    "label": "Asset",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": true,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "assets",
+                            "field": "file"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "date",
+                    "label": "Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "result",
+                    "label": "Result",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "assets",
+                        "field": "file"
+                    },
+                    "child": {
+                        "section": "cdn-sync-log",
+                        "field": "asset"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Activity & Statistics",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 37,
+            "handle": "authentication-errors",
+            "name": "Authentication Errors",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 4,
+                    "elementName": "backtrace",
+                    "label": "Backtrace",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "code",
+                    "label": "Code",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "date",
+                    "label": "Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "message",
+                    "label": "Message",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 3,
+                    "elementName": "request-payload",
+                    "label": "Request Payload",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Settings",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 38,
+            "handle": "preferences",
+            "name": "Preferences",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "value",
+                    "label": "Value",
+                    "custom": {
+                        "size": 4,
+                        "formatter": ""
+                    }
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-11-01T04:21:07+00:00",
+            "dateModifiedAt": "2018-11-01T14:21:07+00:00",
+            "dateCreatedAtGMT": "2018-11-01T04:21:07+00:00",
+            "dateCreatedAt": "2018-11-01T14:21:07+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Shipping",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 39,
+            "handle": "providers",
+            "name": "Providers",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": []
+        },
+        {
+            "dateModifiedAtGMT": "2018-11-06T04:38:50+00:00",
+            "dateModifiedAt": "2018-11-06T14:38:50+00:00",
+            "dateCreatedAtGMT": "2018-11-06T03:19:28+00:00",
+            "dateCreatedAt": "2018-11-06T13:19:28+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 41,
+            "handle": "product-modifiers",
+            "name": "Product Modifiers",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "description",
+                    "label": "Description",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "is-enabled",
+                    "label": "Is Enabled?",
+                    "custom": {
+                        "defaultState": "on",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "modifier",
+                    "label": "Modifier",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "products",
+                    "label": "Applies to Products",
+                    "custom": {
+                        "allowMultipleSelection": true,
+                        "hideWhenPrepopulated": false,
+                        "limit": 200,
+                        "relatedFieldId": {
+                            "section": "products",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "products",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "product-modifiers",
+                        "field": "products"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-04-23T23:14:03+00:00",
+            "dateCreatedAt": "2018-04-24T09:14:03+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Email",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 17,
+            "handle": "email-templates",
+            "name": "Templates",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "fields",
+                    "label": "Fields",
+                    "custom": {
+                        "allowMultipleSelection": true,
+                        "hideWhenPrepopulated": false,
+                        "limit": 40,
+                        "relatedFieldId": {
+                            "section": "email-template-fields",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "postmark-template-id",
+                    "label": "Postmark Template ID",
+                    "custom": {
+                        "validator": "",
+                        "autoUnique": true
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "email-template-fields",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "email-templates",
+                        "field": "fields"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-23T15:44:03+00:00",
+            "dateModifiedAt": "2018-10-24T01:44:03+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Support",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 19,
+            "handle": "support-tickets",
+            "name": "Tickets",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "backer",
+                    "label": "Backer",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "category",
+                    "label": "Category",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": true,
+                        "staticOptions": "",
+                        "dynamicOptions": {
+                            "section": "support-categories",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "date-created-at",
+                    "label": "Created At",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "description",
+                    "label": "Description",
+                    "custom": {
+                        "size": 10,
+                        "formatter": "markdown_with_purifier"
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 6,
+                    "elementName": "images",
+                    "label": "Images",
+                    "custom": {
+                        "allowMultipleSelection": true,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "support-images",
+                            "field": "uuid"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 3,
+                    "elementName": "number",
+                    "label": "Number",
+                    "custom": {
+                        "pattern": "(T)\\d{5}-[A-Z]{2}",
+                        "isUnique": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 5,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "support-tickets",
+                        "field": "backer"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 22,
+            "handle": "transactions",
+            "name": "Transactions",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "amount",
+                    "label": "Amount",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 6,
+                    "elementName": "currency",
+                    "label": "Currency",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "currencies",
+                            "field": "code"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "date-created",
+                    "label": "Date Created",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 10,
+                    "elementName": "date-updated",
+                    "label": "Date Updated",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "ipn-record-status",
+                    "label": "IPN Record Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": false,
+                        "staticOptions": "started,failed,finished"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 8,
+                    "elementName": "payment-method",
+                    "label": "Payment Method",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "payment-methods",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 4,
+                    "elementName": "request-data",
+                    "label": "Request Data",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 9,
+                    "elementName": "response-data",
+                    "label": "Response Data",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "status",
+                    "label": "Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": false,
+                        "staticOptions": "Succeeded,Completed,Created,Denied,Expired,Failed,Canceled_Reversal,Pending,Refunded,Processed,Voided"
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "transaction-id",
+                    "label": "Transaction ID",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 7,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "currencies",
+                        "field": "code"
+                    },
+                    "child": {
+                        "section": "transactions",
+                        "field": "currency"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-11-15T03:54:58+00:00",
+            "dateModifiedAt": "2018-11-15T13:54:58+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 23,
+            "handle": "orders",
+            "name": "Orders",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 3,
+                    "elementName": "cart",
+                    "label": "Cart",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "carts",
+                            "field": "uuid"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 9,
+                    "elementName": "created-at",
+                    "label": "Created At",
+                    "custom": {
+                        "prePopulate": "now",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 4,
+                    "elementName": "is-primary",
+                    "label": "Primary Order for Pledge",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 6,
+                    "elementName": "order-cost-override",
+                    "label": "Order Cost Override",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "order-id",
+                    "label": "Order Id",
+                    "custom": []
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 7,
+                    "elementName": "override",
+                    "label": "Cost &amp; Shipping Override",
+                    "custom": {
+                        "defaultState": "off",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 8,
+                    "elementName": "override-note",
+                    "label": "Override Note",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "payment",
+                    "label": "Payment",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "transactions",
+                            "field": "transaction-id"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "pledge",
+                    "label": "Pledge",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": true,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "pledges",
+                            "field": "uuid"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "shipping-cost-override",
+                    "label": "Shipping Cost Override",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "transactions",
+                        "field": "transaction-id"
+                    },
+                    "child": {
+                        "section": "orders",
+                        "field": "payment"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": true,
+            "sortOrder": 25,
+            "handle": "order-items",
+            "name": "Order Items",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "order",
+                    "label": "Order",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": true,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "orders",
+                            "field": "order-id"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "product",
+                    "label": "Product",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "products",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "quantity",
+                    "label": "Quantity",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "products",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "order-items",
+                        "field": "product"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-11-06T03:04:16+00:00",
+            "dateModifiedAt": "2018-11-06T13:04:16+00:00",
+            "dateCreatedAtGMT": "2018-09-29T11:30:23+00:00",
+            "dateCreatedAt": "2018-09-29T21:30:23+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Shipping",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 31,
+            "handle": "shipping-zones",
+            "name": "Zones",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "default",
+                    "label": "Default",
+                    "custom": {
+                        "defaultState": "off",
+                        "autoToggle": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "shipping-provider",
+                    "label": "Shipping Provider",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "providers",
+                            "field": "name"
+                        }
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "providers",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "shipping-zones",
+                        "field": "shipping-provider"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-26T12:40:21+00:00",
+            "dateModifiedAt": "2018-10-26T22:40:21+00:00",
+            "dateCreatedAtGMT": "2018-09-29T12:17:46+00:00",
+            "dateCreatedAt": "2018-09-29T22:17:46+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Shipping",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 32,
+            "handle": "shipping-rates",
+            "name": "Rates",
+            "fields": [
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "per-unit-rate",
+                    "label": "Is this is a &quot;Per Unit&quot; rate?",
+                    "custom": {
+                        "defaultState": "on",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "price-per-unit",
+                    "label": "Price per Unit",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "weight-tier",
+                    "label": "Weight Tier",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "shipping-weight-tiers",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "zones",
+                    "label": "Zones",
+                    "custom": {
+                        "allowMultipleSelection": true,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "shipping-zones",
+                            "field": "name"
+                        }
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "shipping-weight-tiers",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "shipping-rates",
+                        "field": "weight-tier"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-11-06T01:56:58+00:00",
+            "dateModifiedAt": "2018-11-06T11:56:58+00:00",
+            "dateCreatedAtGMT": "2018-11-06T00:51:17+00:00",
+            "dateCreatedAt": "2018-11-06T10:51:17+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Purchases",
+            "allowFiltering": false,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 40,
+            "handle": "cart-validators",
+            "name": "Cart Validators",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "description",
+                    "label": "Description",
+                    "custom": {
+                        "size": 2,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "is-enabled",
+                    "label": "Enabled",
+                    "custom": {
+                        "defaultState": "on",
+                        "description": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "validator",
+                    "label": "Validator",
+                    "custom": {
+                        "size": 20,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "zones",
+                    "label": "Applies to Zones",
+                    "custom": {
+                        "allowMultipleSelection": true,
+                        "hideWhenPrepopulated": false,
+                        "limit": 200,
+                        "relatedFieldId": {
+                            "section": "shipping-zones",
+                            "field": "name"
+                        }
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "shipping-zones",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "cart-validators",
+                        "field": "zones"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-09-20T09:03:05+00:00",
+            "dateCreatedAt": "2018-09-20T19:03:05+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Email",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 14,
+            "handle": "emails",
+            "name": "Emails",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 3,
+                    "elementName": "data",
+                    "label": "Data",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "date-created",
+                    "label": "Date Created",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "date-sent",
+                    "label": "Date Sent",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "recipient",
+                    "label": "Recipient",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "backers",
+                            "field": "email-address"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "template",
+                    "label": "Template",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "email-templates",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "backers",
+                        "field": "email-address"
+                    },
+                    "child": {
+                        "section": "emails",
+                        "field": "recipient"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2018-08-18T23:49:16+00:00",
+            "dateCreatedAt": "2018-08-19T09:49:16+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Email",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 15,
+            "handle": "email-queue",
+            "name": "Queue",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "date-queued",
+                    "label": "Date Queued",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "email",
+                    "label": "Email",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "emails",
+                            "field": "recipient"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "send-date",
+                    "label": "Next Attempt to Send",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "sent-attempts",
+                    "label": "Remaining Send Attempts",
+                    "custom": []
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "status",
+                    "label": "Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": true,
+                        "staticOptions": "Queued,Failed,Held"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "uuid",
+                    "label": "UUID",
+                    "custom": []
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "emails",
+                        "field": "recipient"
+                    },
+                    "child": {
+                        "section": "email-queue",
+                        "field": "email"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Email",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 16,
+            "handle": "email-logs",
+            "name": "Logs",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 0,
+                    "elementName": "date",
+                    "label": "Date",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 4,
+                    "elementName": "email",
+                    "label": "Email",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "emails",
+                            "field": "uuid"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "message",
+                    "label": "Message",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 2,
+                    "elementName": "payload",
+                    "label": "Payload",
+                    "custom": {
+                        "size": 15,
+                        "formatter": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 3,
+                    "elementName": "status",
+                    "label": "Status",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "sortOptions": true,
+                        "staticOptions": "Sent,Failed"
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "emails",
+                        "field": "uuid"
+                    },
+                    "child": {
+                        "section": "email-logs",
+                        "field": "email"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Shipping",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 30,
+            "handle": "countries",
+            "name": "Countries",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 1,
+                    "elementName": "code",
+                    "label": "Code",
+                    "custom": {
+                        "validator": "/^([A-Za-z]{2}|UNKNOWN)$/i"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "name",
+                    "label": "Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "zone",
+                    "label": "Zone",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "shipping-zones",
+                            "field": "name"
+                        }
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "shipping-zones",
+                        "field": "name"
+                    },
+                    "child": {
+                        "section": "countries",
+                        "field": "zone"
+                    }
+                }
+            ]
+        },
+        {
+            "dateModifiedAtGMT": "2018-10-10T08:01:05+00:00",
+            "dateModifiedAt": "2018-10-10T18:01:05+00:00",
+            "dateCreatedAtGMT": "2017-09-24T03:19:39+00:00",
+            "dateCreatedAt": "2017-09-24T13:19:39+00:00",
+            "modificationAuthorId": 1,
+            "authorId": 1,
+            "navigationGroup": "Surveys",
+            "allowFiltering": true,
+            "hideFromBackendNavigation": false,
+            "sortOrder": 12,
+            "handle": "addresses",
+            "name": "Addresses",
+            "fields": [
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 3,
+                    "elementName": "address-1",
+                    "label": "Address 1",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 4,
+                    "elementName": "address-2",
+                    "label": "Address 2",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 5,
+                    "elementName": "city",
+                    "label": "City",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 2,
+                    "elementName": "country",
+                    "label": "Country",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": false,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "countries",
+                            "field": "name"
+                        }
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 10,
+                    "elementName": "created-at",
+                    "label": "Date Created",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 12,
+                    "elementName": "delivery-notes",
+                    "label": "Delivery Notes",
+                    "custom": {
+                        "size": 4,
+                        "formatter": "markdown_with_purifier"
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 1,
+                    "elementName": "first-name",
+                    "label": "First Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "main",
+                    "sortOrder": 11,
+                    "elementName": "last-name",
+                    "label": "Last Name",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 8,
+                    "elementName": "modified-at",
+                    "label": "Date Modified",
+                    "custom": {
+                        "prePopulate": "",
+                        "calendar": false,
+                        "time": true
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": true,
+                    "location": "sidebar",
+                    "sortOrder": 7,
+                    "elementName": "postcode",
+                    "label": "Postcode",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 6,
+                    "elementName": "state",
+                    "label": "State",
+                    "custom": {
+                        "validator": ""
+                    }
+                },
+                {
+                    "required": true,
+                    "showColumn": false,
+                    "location": "main",
+                    "sortOrder": 0,
+                    "elementName": "survey",
+                    "label": "Survey",
+                    "custom": {
+                        "allowMultipleSelection": false,
+                        "hideWhenPrepopulated": true,
+                        "limit": 20,
+                        "relatedFieldId": {
+                            "section": "surveys",
+                            "field": "completed-at"
+                        }
+                    }
+                },
+                {
+                    "required": false,
+                    "showColumn": false,
+                    "location": "sidebar",
+                    "sortOrder": 9,
+                    "elementName": "telephone",
+                    "label": "Telephone",
+                    "custom": {
+                        "validator": ""
+                    }
+                }
+            ],
+            "associations": [
+                {
+                    "hideAssociation": false,
+                    "interface": null,
+                    "editor": null,
+                    "parent": {
+                        "section": "surveys",
+                        "field": "completed-at"
+                    },
+                    "child": {
+                        "section": "addresses",
+                        "field": "survey"
+                    }
+                }
+            ]
+        }
+    ]
+}
