@@ -17,13 +17,14 @@ class Select extends AbstractField implements Interfaces\FieldInterface, Interfa
     {
         return (
             $this instanceof Interfaces\FieldAssociationInterface
+            && ($this->dynamicOptions instanceof Lib\Property)
             && !is_null($this->dynamicOptions->value)
         );
     }
 
     public function associationParentSectionId()
     {
-        return !is_null($this->dynamicOptions->value)
+        return ($this->dynamicOptions instanceof Lib\Property) && !is_null($this->dynamicOptions->value)
             ? $this->fetchAssociatedField('dynamicOptions')->sectionId->value
             : null
         ;
@@ -31,7 +32,7 @@ class Select extends AbstractField implements Interfaces\FieldInterface, Interfa
 
     public function associationParentSectionFieldId()
     {
-        return !is_null($this->dynamicOptions->value)
+        return ($this->dynamicOptions instanceof Lib\Property) && !is_null($this->dynamicOptions->value)
             ? $this->fetchAssociatedField('dynamicOptions')->id->value
             : null
         ;
