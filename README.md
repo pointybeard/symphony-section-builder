@@ -1,7 +1,7 @@
 # Symphony CMS: Section Builder
 
-- Version: v0.1.3
-- Date: November 28th 2018
+- Version: v0.1.4
+- Date: December 2nd 2018
 - [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
 - [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
 
@@ -110,6 +110,8 @@ Quick example of how to use this library:
 
 ### Importing JSON
 
+Run `bin/import` from the command line or use code like this:
+
 ```php
     use pointybeard\Symphony\SectionBuilder\Lib;
 
@@ -173,7 +175,7 @@ JSON must be an array of sections and look like this:
 
 ### Exporting
 
-Exporting can be done using the `__toString()`, `__toJson()`, and/or `__toArray()` methods provided by `AbstractField` and `Section`. For example:
+Run `bin/export` from the command line or use the `__toString()`, `__toJson()`, and/or `__toArray()` methods provided by `AbstractField` and `Section`. For example:
 
 ```php
     use pointybeard\Symphony\SectionBuilder\Lib;
@@ -199,6 +201,23 @@ If a full export is necessary, use the `all()` method and build the array before
 ```
 
 Note that IDs (specifically Section and Field `id` and Field `sectionId` properties) are automatically stripped out by `__toString()` and `__toJson()`. To keep them, either use `__toArray()` and encode to JSON yourself, or using `__toJson()` but set `$excludeIds` to false. e.g. `$section->__toJson(false)`. See this implementation in the Trait `hasToStringToJsonTrait`.
+
+### Diff
+
+You can compare a database with a JSON export via `bin/diff` from the command line or use code like this:
+
+```php
+use pointybeard\Symphony\SectionBuilder\Lib;
+
+try {
+    foreach(Lib\Diff::fromJsonFile("/path/to/some/file.json")){
+        // Print changes found here ...
+    }
+
+} catch (\Exception $ex) {
+    print "FAILED: " . $ex->getMessage() . PHP_EOL;
+}
+```
 
 ## Support
 

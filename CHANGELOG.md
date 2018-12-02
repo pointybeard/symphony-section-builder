@@ -2,7 +2,23 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.1.2 - 2018-11-28
+## 0.1.4 - 2018-11-28
+#### Added
+- Added test data for import and diff
+- Added `symphonycms/symphony-2` and `pointybeard/php-cli-lib` to composer
+- Added `--help` information
+- Using `CLILib` for parsing arguments and displaying messages in `bin/diff`, `bin/import`, and `bin/export`
+
+#### Changed
+- Changed AbstractTableModel::isFlagSet() from protected to public
+- Added extra checks to Select model `hasAssociations()`, `associationParentSectionId()`, and `associationParentSectionFieldId()` methods to ensure 'dynamicOptions' is an instance of `Property` before trying to test the value
+- Renamed `DiffRecord` to `Record` and placed inside `/Diff` folder. Updated Diff class to reflect this change
+- Throwing exception if model for field type cannot be located when attempting to import
+- Changed self to static when calling getFieldMappings() in the constructor. This ensures custom properties in the child class are set initialised correctly
+- Throwing exception if unable to find field ID from provided element name in `AbstractField::loadFromElementName()`
+- Throwing exception if unable to load field from provided ID in `AbstractField::loadFromId()`
+
+## 0.1.3 - 2018-11-28
 #### Added
 * Implemented `__toArray()` abstract method in Section, AbstractField, and SectionAssociation models
 * Added `hasToStringToJsonTrait` Trait. This provides `__toJson()` and `__toString()`
