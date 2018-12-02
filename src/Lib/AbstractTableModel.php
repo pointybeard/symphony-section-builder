@@ -41,7 +41,7 @@ abstract class AbstractTableModel extends PropertyBag
         }
     }
 
-    protected static function isFlagSet($flags, $flag)
+    public static function isFlagSet($flags, $flag)
     {
         // Flags support bitwise operators so it's easy to see
         // if one has been set.
