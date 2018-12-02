@@ -18,7 +18,7 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
     public function __construct()
     {
         // Set up field so we don't get errors later
-        foreach (self::getFieldMappings() as $m) {
+        foreach (static::getFieldMappings() as $m) {
             $this->{$m['name']}(null);
         }
     }
@@ -81,6 +81,11 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
                 'flags' => self::FLAG_INT | self::FLAG_IMMUTABLE
             ],
 
+            'type' => [
+                'name' => 'type',
+                'flags' => self::FLAG_STR
+            ],
+
             'label' => [
                 'name' => 'label',
                 'flags' => self::FLAG_STR
@@ -137,7 +142,13 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
         ));
         $query->bindParam(':elementName', $elementName, \PDO::PARAM_STR);
         $query->execute();
-        return self::loadFromId($query->fetchColumn());
+        $id = $query->fetchColumn();
+
+        if($id === false) {
+            throw new Exceptions\NoSuchFieldException("Unable to locate field with element name '{$elementName}'.");
+        }
+
+        return self::loadFromId($id);
     }
 
     public static function loadFromId($id)
@@ -151,6 +162,10 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
         $query->bindParam(':id', $id, \PDO::PARAM_INT);
         $query->execute();
         $basics = $query->fetch(\PDO::FETCH_ASSOC);
+
+        if($basics === false) {
+            throw new Exceptions\NoSuchFieldException("Unable to locate field with id '{$id}'.");
+        }
 
         $class = self::fieldTypeToClassName($basics['type']);
         $attributeTable = self::fieldTypeToAttributeTableName($basics['type']);
