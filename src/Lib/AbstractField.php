@@ -134,13 +134,17 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
         return "tbl_fields_{$type}";
     }
 
-    public static function loadFromElementName($elementName)
+    public static function loadFromElementName($elementName, $sectionHandle)
     {
-        $query = \SymphonyPDO\Loader::instance()->prepare(sprintf(
-            'SELECT * FROM `%s` WHERE `element_name` = :elementName LIMIT 1',
-            static::TABLE
-        ));
+        $query = \SymphonyPDO\Loader::instance()->prepare(
+            'SELECT f.*, s.handle
+            FROM `tbl_fields` as `f`
+            LEFT JOIN `tbl_sections` as `s` on f.parent_section = s.id
+            WHERE f.element_name = :elementName AND s.handle = :sectionHandle
+            LIMIT 1'
+        );
         $query->bindParam(':elementName', $elementName, \PDO::PARAM_STR);
+        $query->bindParam(':sectionHandle', $sectionHandle, \PDO::PARAM_STR);
         $query->execute();
         $id = $query->fetchColumn();
 
