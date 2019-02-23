@@ -1,7 +1,7 @@
 # Symphony CMS: Section Builder
 
-- Version: v0.1.4
-- Date: December 2nd 2018
+- Version: v0.1.6
+- Date: Feburary 23rd 2019
 - [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
 - [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
 
@@ -9,12 +9,22 @@ A set of classes that assist with the creating and updating of sections and thei
 
 ## Installation
 
-This library is installed via [Composer](http://getcomposer.org/). To install, use `composer require pointybeard/symphony-section-builder` or add `"pointybeard/pointybeard/symphony-section-builder": "~0.1"` to your `composer.json` file.
+This libary can be used standalone or as part of SymphonyCMS (including extensions) install.
 
-And run composer to update your dependencies:
+### Standalone
+
+Clone desired version from the GitHub repository with `git clone https://github.com/pointybeard/symphony-section-builder.git` then run `composer update` within that folder. Note, this will install dev library `symphonycms/symphony-2`.
+
+### Using Composer
+
+To install via [Composer](http://getcomposer.org/), use `composer require pointybeard/symphony-section-builder` or add `"pointybeard/pointybeard/symphony-section-builder": "~0.1"` to your `composer.json` file.
+
+And run composer to update your dependencies, for example:
 
     $ curl -s http://getcomposer.org/installer | php
     $ php composer.phar update
+
+Note that this method will NOT install any dev libraries, specifically `symphonycms/symphony-2`. Generally this is the desired behaviour, however, should the core SymphonyCMS library not get included anywhere via composer (e.g. Section Builder is being used as part of a library that doesn't already include SymphonyCMS), be use to use the `--dev` flag (e.g. `composer update --dev`) to ensure `symphonycms/symphony-2` is also installed.
 
 ## Usage
 

@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.6 - 2019-02-23
+#### Changed
+- Showing result count when running `bin/diff`
+- Passing section handle to call of `AbstractField::loadFromElementName()` in `Lib\Diff`
+- Added `sectionHandle` argument to `AbstractField::loadFromElementName()` method.
+- Updated `AbstractField::loadFromElementName()` to use `sectionHandle` in SQL, ensuring the correct field is retrieved (i.e. not just the first found with `elementName`)
+
+#### Fixed
+- Fixed example in `--usage` for `bin/export`
+
+#### Added
+- Added `phpunit/phpunit` and moved `symphonycms/symphony2` to require-dev composer definition.
+
 ## 0.1.4 - 2018-11-28
 #### Added
 - Added test data for import and diff
