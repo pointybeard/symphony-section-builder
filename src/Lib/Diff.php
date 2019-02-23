@@ -81,7 +81,7 @@ class Diff
                     $fieldsInComparisonData[] = $f->elementName;
 
                     try{
-                        $field = AbstractField::loadFromElementName($f->elementName);
+                        $field = AbstractField::loadFromElementName($f->elementName, $s->handle);
 
                         foreach($field::getFieldMappings() as $name => $properties) {
                             $nameActual = $properties['name'];
