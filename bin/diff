@@ -144,7 +144,16 @@ if(is_null($databaseCredentials['password'])) {
 
 try {
     SymphonyPDO::instance((object)$databaseCredentials);
+    $count = (object)[
+        Lib\Diff\Record::OP_ADDED => 0,
+        Lib\Diff\Record::OP_REMOVED => 0,
+        Lib\Diff\Record::OP_UPDATED => 0,
+        "total" => 0
+    ];
     foreach (Lib\Diff::fromJsonFile($json->value()) as $d) {
+        $count->total++;
+        $count->{$d->op}++;
+
         switch ($d->op) {
             case Lib\Diff\Record::OP_ADDED:
                 printf("ADDED %s - %s" . PHP_EOL, $d->type, $d->nameNew);
@@ -160,6 +169,20 @@ try {
 
         }
     }
+
+    (new Message)
+        ->message(sprintf(
+            "Completed (%d total, %d added, %d updated, %d removed)",
+            $count->total,
+            $count->{Lib\Diff\Record::OP_ADDED},
+            $count->{Lib\Diff\Record::OP_UPDATED},
+            $count->{Lib\Diff\Record::OP_REMOVED}
+        ))
+        ->prependDate(false)
+        ->appendNewLine(true)
+        ->display()
+    ;
+
 } catch (\Exception $ex) {
     (new Message)
         ->message(sprintf(
