@@ -36,7 +36,7 @@ Database Settings:
   --database-port=PORT             port number of database server. Default is 3306.
 
 Examples:
-... diff -m /path/to/manifest" . PHP_EOL . PHP_EOL);
+... export -m /path/to/manifest" . PHP_EOL . PHP_EOL);
     exit;
 }
 
