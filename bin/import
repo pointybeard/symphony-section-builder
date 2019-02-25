@@ -1,19 +1,5 @@
 #!/usr/bin/env php
 <?php
-// This just avoids PHP notices from not having a DOCROOT set.
-define("DOCROOT", realpath(__DIR__ . '/../'));
-
-include DOCROOT . '/vendor/autoload.php';
-
-use CLILib\Argument;
-use CLILib\Message;
-use CLILib\Prompt;
-
-use SymphonyPDO\Loader as SymphonyPDO;
-use pointybeard\Symphony\SectionBuilder\Lib;
-
-$args = new Argument\Iterator;
-
 function usage() {
     printf (PHP_EOL . "import 1.0.0, generate SymphonyCMS sections from a JSON file
     Usage: import [OPTION]..
@@ -23,6 +9,8 @@ Basics:
   -m, --manifest            Path to the manifest folder containing a config.php
                               file for install of SymphonyCMS to compare
   -j, --json                Path of JSON file to use for comparison.
+  -s, --symphony            Path to SymphonyCMS core. Default is
+                              vendor/symphonycms/symphony-2
 
 Database Settings:
   --database-name=STRING           name of the database to use
@@ -40,8 +28,37 @@ Examples:
     exit;
 }
 
+// This just avoids PHP notices from not having a DOCROOT set.
+define("DOCROOT", realpath(__DIR__ . '/../'));
+
+include DOCROOT . '/vendor/autoload.php';
+
+use CLILib\Argument;
+use CLILib\Message;
+use CLILib\Prompt;
+
+use SymphonyPDO\Loader as SymphonyPDO;
+use pointybeard\Symphony\SectionBuilder\Lib;
+
+$args = new Argument\Iterator;
+
 if ($args->find(['h', 'help', 'usage'])) {
     usage();
+}
+
+$symphonyPath = $args->find(['s', 'symphony']);
+if ($symphonyPath instanceof Argument && strlen(trim($symphonyPath->value())) > 0) {
+    // Check to make sure Symphony core hasn't already been included
+    if(class_exists('Symphony')) {
+        (new Message)
+            ->message("WARNING - Symphony core has already been included via Composer. Ignoring -s flag.")
+            ->prependDate(false)
+            ->foreground("yellow")
+            ->display()
+        ;
+    } else {
+        include realpath($symphonyPath->value()) . '/vendor/autoload.php';
+    }
 }
 
 $manifest = null;

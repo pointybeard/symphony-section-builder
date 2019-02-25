@@ -5,17 +5,37 @@ class Import
 {
     protected static function hasAssociations(\StdClass $section)
     {
-        return (isset($section->associations) && count($section->associations) > 0);
+        return (
+            isset($section->associations) && count($section->associations) > 0
+        );
     }
 
-    protected static function orderSectionsByAssociations(array $sections)
+    protected static function hasDynamicOptions(\StdClass $field)
+    {
+        if (
+            isset($field->custom) && isset($field->custom->dynamicOptions) && isset($field->custom->dynamicOptions->section)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function orderSectionsByAssociations(array $sections)
     {
         $associations = [];
         foreach ($sections as $s) {
             $associations[$s->handle] = [];
+
             if (self::hasAssociations($s)) {
                 foreach ($s->associations as $a) {
                     $associations[$s->handle][] = $a->parent->section;
+                }
+            }
+
+            foreach($s->fields as $f) {
+                if (self::hasDynamicOptions($f)) {
+                    $associations[$s->handle][] = $f->custom->dynamicOptions->section;
                 }
             }
         }
