@@ -138,7 +138,7 @@ class SectionAssociation extends AbstractTableModel
     public static function fetchByChildSectionId($sectionId)
     {
         $query = \SymphonyPDO\Loader::instance()->prepare(sprintf(
-            'SELECT * FROM `%s` WHERE `child_section_id` = :sectionId LIMIT 1',
+            'SELECT * FROM `%s` WHERE `child_section_id` = :sectionId',
             static::TABLE
         ));
         $query->bindParam(':sectionId', $sectionId, \PDO::PARAM_INT);
