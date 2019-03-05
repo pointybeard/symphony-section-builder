@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.7 - 2019-03-06
+#### Fixed
+- Removed `LIMIT 1` from `SectionAssociation::fetchByChildSectionId()` which Prevented more than a single association from being returned.
+- Fixed ordering issue when generating an export (Closes #1)
+
 ## 0.1.6 - 2019-02-23
 #### Changed
 - Showing result count when running `bin/diff`
