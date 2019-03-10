@@ -186,10 +186,18 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
         $query->bindParam(':id', $id, \PDO::PARAM_INT);
         $query->execute();
 
-        return (new ResultIterator(
+        $field = (new ResultIterator(
             $class,
             $query
         ))->current();
+
+        if(!($field instanceof self)) {
+            throw new Exceptions\CorruptFieldException(
+                "Unable to load field with ID {$id}. Something appears to be wrong with the attributes table record for this field. Does it exist?"
+            );
+        }
+
+        return $field;
     }
 
     protected function findNextSortOrderValue()
@@ -234,6 +242,7 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
 
         \SymphonyPDO\Loader::instance()->doInTransaction(
             function (\SymphonyPDO\Lib\Database $db) use ($field) {
+
                 $id = $db->insertUpdate(
                     self::getDatabaseReadyData(),
                     [
@@ -248,8 +257,18 @@ abstract class AbstractField extends SectionBuilder\AbstractTableModel
                     self::TABLE
                 );
 
+                // This is a new field. It does not know it's own ID yet.
+                // The call to insertUpdate() will have returned the new
+                // ID value, so, set that in the field.
                 if ($field->id->value == null) {
                     $field->id((int)$id);
+
+                // This field already has an ID which means an UPDATE
+                // call was made (as opposed to an INSERT). Thus, $id will be 0.
+                // To avoid issues later, pull out the existing field ID and
+                // assign it to $id.
+                } else {
+                    $id = $field->id->value;
                 }
 
                 // Save the field attributes
