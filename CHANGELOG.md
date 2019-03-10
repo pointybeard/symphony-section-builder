@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.8 - 2019-03-10
+#### Added
+- Added `CorruptFieldException` exception which is used by `AbstractField::loadFromId()`
+
+#### Changed
+- Throwing `CorruptFieldException` if there is a problem in `AbstractField::loadFromId()`
+-
+#### Fixed
+- Setting field ID correctly if `AbstractField::commit()` triggers an update instead of insert.
+
 ## 0.1.7 - 2019-03-06
 #### Fixed
 - Removed `LIMIT 1` from `SectionAssociation::fetchByChildSectionId()` which Prevented more than a single association from being returned.
