@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.10 - 2019-03-15
+#### Fixed
+- Fixed field id accessor in `hasFetchAssociatedFieldTrait` trait
+
+## 0.1.9 - 2019-03-10
+#### Fixed
+- Added Uuid field model (previously UUID) to avoid namespace case issues on case sensitive operating systems. Removed UUID field model in order to rename to Uuid
+
 ## 0.1.8 - 2019-03-10
 #### Added
 - Added `CorruptFieldException` exception which is used by `AbstractField::loadFromId()`
