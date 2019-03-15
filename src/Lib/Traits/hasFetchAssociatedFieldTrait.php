@@ -10,7 +10,7 @@ trait hasFetchAssociatedFieldTrait
         return (
             $this->$field->value instanceof Lib\AbstractField
                 ? $this->$field->value
-                : Lib\AbstractField::loadFromId((int)$this->$field->value)
+                : Lib\AbstractField::loadFromId((int)$this->$field->value->value)
         );
     }
 }
