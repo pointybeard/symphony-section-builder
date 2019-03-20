@@ -3,6 +3,16 @@ namespace pointybeard\Symphony\SectionBuilder\Lib;
 
 class Import
 {
+
+    const FLAG_SKIP_ORDERING = 0x0001;
+
+    public static function isFlagSet($flags, $flag)
+    {
+        // Flags support bitwise operators so it's easy to see
+        // if one has been set.
+        return ($flags & $flag) == $flag;
+    }
+
     protected static function hasAssociations(\StdClass $section)
     {
         return (
@@ -89,7 +99,7 @@ class Import
         return $sectionsOrdered;
     }
 
-    public static function fromJsonFile($file)
+    public static function fromJsonFile($file, $flags = null)
     {
         if (!is_readable($file)) {
             throw new \Exception(sprintf(
@@ -97,10 +107,10 @@ class Import
                 $file
             ));
         }
-        return self::fromJsonString(file_get_contents($file));
+        return self::fromJsonString(file_get_contents($file), $flags);
     }
 
-    public static function fromJsonString($string)
+    public static function fromJsonString($string, $flags = null)
     {
         $json = json_decode($string);
         if ($json == false || is_null($json)) {
@@ -111,13 +121,19 @@ class Import
 
         // @todo: Validate json against schema
 
-        return self::fromObject($json);
+        return self::fromObject($json, $flags);
     }
 
 
-    public static function fromObject(\StdClass $data) {
+    public static function fromObject(\StdClass $data, $flags = null) {
 
-        $sections = self::orderSectionsByAssociations($data->sections);
+        // Sometimes it might be necessary to skip the ordering step.
+        // This is important when importing partial section JSON
+        // since it will often trigger a circular dependency exception.
+        $sections = self::isFlagSet($flags, self::FLAG_SKIP_ORDERING)
+            ? $data->sections
+            : self::orderSectionsByAssociations($data->sections)
+        ;
 
         $result = [];
         foreach ($sections as $s) {
