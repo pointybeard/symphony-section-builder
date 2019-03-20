@@ -3,7 +3,7 @@
 function usage() {
     printf (PHP_EOL . "export 1.0.0, generate JSON string representation of
 all sections and fields.
-    Usage: diff [OPTION]..
+    Usage: export [OPTION]..
 
 Basics:
   -h,  --help, --usage      print this help information
