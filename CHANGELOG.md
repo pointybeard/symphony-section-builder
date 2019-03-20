@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.11 - 2019-03-20
+#### Fixed
+- Fixed usage information in `bin/export`
+
+#### Added
+- Added flag `Import::FLAG_SKIP_ORDERING`.
+- Added ability to pass flags into `Import::fromJsonString()`, `Import::fromJsonFile()`, and `Import::FromObject()`.
+
 ## 0.1.10 - 2019-03-15
 #### Fixed
 - Fixed field id accessor in `hasFetchAssociatedFieldTrait` trait

@@ -1,7 +1,7 @@
 # Symphony CMS: Section Builder
 
-- Version: v0.1.10
-- Date: March 15th 2019
+- Version: v0.1.11
+- Date: March 20th 2019
 - [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
 - [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
 
@@ -133,6 +133,13 @@ Run `bin/import` from the command line or use code like this:
         print "FAILED: " . $ex->getMessage() . PHP_EOL;
         var_dump($ex); die;
     }
+```
+
+Use flag `FLAG_SKIP_ORDERING` if importing partial section JSON. This helps
+to avoid a circular dependency exception being thrown. Flags are supported by `fromJsonFile()`, `fromJsonString()`, and `fromObject()`. For example:
+
+```PHP
+    Lib\Import::fromJsonFile("/path/to/some/file.json", Lib\Import::FLAG_SKIP_ORDERING);
 ```
 
 JSON must be an array of sections and look like this:
