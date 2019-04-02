@@ -137,6 +137,27 @@ class Import
 
         $result = [];
         foreach ($sections as $s) {
+
+            $s->dateCreatedAt = date('c', isset($s->dateCreatedAt)
+                ? strtotime($s->dateCreatedAt)
+                : time()
+            );
+
+            $s->dateCreatedAtGMT = gmdate('c', isset($s->dateCreatedAtGMT)
+                ? strtotime($s->dateCreatedAtGMT)
+                : time()
+            );
+
+            $s->dateModifiedAt = date('c', isset($s->dateModifiedAt)
+                ? strtotime($s->dateModifiedAt)
+                : time()
+            );
+
+            $s->dateModifiedAtGMT = gmdate('c', isset($s->dateModifiedAtGMT)
+                ? strtotime($s->dateModifiedAtGMT)
+                : time()
+            );
+
             $section = Models\Section::loadFromHandle($s->handle);
             if (!($section instanceof Models\Section)) {
                 $section = (new Models\Section)
@@ -148,10 +169,10 @@ class Import
                     ->navigationGroup($s->navigationGroup)
                     ->authorId($s->authorId)
                     ->modificationAuthorId($s->modificationAuthorId)
-                    ->dateCreatedAt(date('c', strtotime($s->dateCreatedAt)))
-                    ->dateCreatedAtGMT(gmdate('c', strtotime($s->dateCreatedAtGMT)))
-                    ->dateModifiedAt(date('c', strtotime($s->dateModifiedAt)))
-                    ->dateModifiedAtGMT(gmdate('c', strtotime($s->dateModifiedAtGMT)))
+                    ->dateCreatedAt($s->dateCreatedAt)
+                    ->dateCreatedAtGMT($s->dateCreatedAtGMT)
+                    ->dateModifiedAt($s->dateModifiedAt)
+                    ->dateModifiedAtGMT($s->dateModifiedAtGMT)
                 ;
 
                 // This will help us handle circular dependancies later.
