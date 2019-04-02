@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.12 - 2019-04-02
+#### Fixed
+- No longer necessary to specify section creation dates when importing
+
 ## 0.1.11 - 2019-03-20
 #### Fixed
 - Fixed usage information in `bin/export`

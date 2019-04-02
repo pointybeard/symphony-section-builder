@@ -1,7 +1,7 @@
 # Symphony CMS: Section Builder
 
-- Version: v0.1.11
-- Date: March 20th 2019
+- Version: v0.1.12
+- Date: April 02nd 2019
 - [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
 - [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
 
