@@ -3,14 +3,14 @@
     "description": "SymphonyCMS Section Builder",
     "type": "library",
     "require": {
-        "php": "^5.6",
+        "php": ">=7.2",
         "pointybeard/property-bag": "^1.0",
         "pointybeard/symphony-pdo": "^0.1",
-        "pointybeard/php-cli-lib": "^1.0"
+        "pointybeard/php-cli-lib": "~1.0"
     },
     "require-dev": {
         "symphonycms/symphony-2": "^2.7",
-        "phpunit/phpunit": "^5"
+        "phpunit/phpunit": "^8"
     },
     "license": "MIT",
     "authors": [
