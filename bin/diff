@@ -1,68 +1,21 @@
 #!/usr/bin/env php
 <?php
-function usage() {
-    printf (PHP_EOL . "diff 1.0.0, compare JSON file to existing SymphonyCMS install
-    Usage: diff [OPTION]..
-
-Basics:
-  -h,  --help, --usage      print this help information
-  -m, --manifest            Path to the manifest folder containing a config.php
-                              file for install of SymphonyCMS to compare
-  -j, --json                Path of JSON file to use for comparison.
-  -s, --symphony            Path to SymphonyCMS core. Default is
-                              vendor/symphonycms/symphony-2
-
-Database Settings:
-  --database-name=STRING           name of the database to use
-  --database-user=STRING           name of database user
-  --database-password=PASS         password for project database user. Will prompt
-                                    if ommitted.
-  --database-table-prefix=STRING    the prefix for all tables in this project.
-                                     Default is 'tbl_'
-  --database-host=IP_ADDRESS       host IP of database to use for deployment.
-                                    Default is 127.0.0.1
-  --database-port=PORT             port number of database server. Default is 3306.
-
-Examples:
-... diff --json=/path/to/file.json -m /path/to/manifest" . PHP_EOL . PHP_EOL);
-    exit;
-}
 
 // This just avoids PHP notices from not having a DOCROOT set.
 define("DOCROOT", realpath(__DIR__ . '/../'));
 
 include DOCROOT . '/vendor/autoload.php';
 
-use CLILib\Argument;
-use CLILib\Message;
-use CLILib\Prompt;
-
 use SymphonyPDO\Loader as SymphonyPDO;
-use pointybeard\Symphony\SectionBuilder\Lib;
+use Symphony\SectionBuilder\SectionBuilder\Diff;
+use Symphony\Console;
 
-$args = new Argument\Iterator;
+use pointybeard\Helpers\Cli\Message;
+use pointybeard\Helpers\Cli\Prompt;
+use pointybeard\Helpers\Cli\Input;
+use pointybeard\Helpers\Cli\Colour\Colour;
+use pointybeard\Helpers\Functions\Cli;
 
-if ($args->find(['h', 'help', 'usage'])) {
-    usage();
-}
-
-$symphonyPath = $args->find(['s', 'symphony']);
-if ($symphonyPath instanceof Argument && strlen(trim($symphonyPath->value())) > 0) {
-    // Check to make sure Symphony core hasn't already been included
-    if(class_exists('Symphony')) {
-        (new Message)
-            ->message("WARNING - Symphony core has already been included via Composer. Ignoring -s flag.")
-            ->prependDate(false)
-            ->foreground("yellow")
-            ->display()
-        ;
-    } else {
-        include realpath($symphonyPath->value()) . '/vendor/autoload.php';
-    }
-}
-
-$manifest = null;
-$json = null;
 $databaseCredentials = [
     'host' => "127.0.0.1",
     'port' => "3306",
@@ -72,143 +25,238 @@ $databaseCredentials = [
     'tbl_prefix' => "tbl_"
 ];
 
-$json = $args->find(['j', 'json']);
-if (!($json instanceof Argument) || strlen(trim($json->value())) == 0) {
-    (new Message)
-        ->message("ERROR - No input provided. Use -j or --json to specify JSON file.")
-        ->prependDate(false)
-        ->foreground("red")
-        ->display()
-    ;
-    exit;
-} elseif (!is_readable($json->value())) {
-    (new Message)
-        ->message(sprintf(
-            "ERROR - The file '%s' is not readable.",
-            $json->value()
-        ))
-        ->prependDate(false)
-        ->foreground("red")
-        ->display()
-    ;
+$collection = (new Input\InputCollection())
+    ->append(
+        Input\InputTypeFactory::build('Flag')
+            ->name('h')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL)
+            ->description('print this help information')
+    )
+    ->append(
+        Input\InputTypeFactory::build('Flag')
+            ->name('L')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL)
+            ->description('View the software licence this script is released under')
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('json')
+            ->short('j')
+            ->flags(Input\AbstractInputType::FLAG_REQUIRED | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('Path to the input JSON data')
+            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
+                // Make sure -j (--json) is a valid file that can be read
+                $file = $context->find('json');
+
+                if (!is_readable($file)) {
+                    throw new \Exception('The file specified via option --json does not exist or is not readable.');
+                }
+
+                // Now make sure it is valid JSON
+                try {
+                    $json = json_decode(file_get_contents($file), false, 512, JSON_THROW_ON_ERROR);
+                } catch (JsonException $ex) {
+                    throw new \Exception(sprintf('The file specified via option --json does not appear to be a valid JSON ddocument. Returned: %s: %s', $ex->getCode(), $ex->getMessage()));
+                }
+
+                return $file;
+            })
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('manifest')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('Path to the manifest folder containing a config.php. This is an alternative to providing database credentials and instead they are read from config.php')
+            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) use ($databaseCredentials) {
+
+                $config = realpath($context->find('manifest')) . DIRECTORY_SEPARATOR . "config.php";
+
+                if ($config === false || !is_readable($config)) {
+                    throw new \Exception('The manifest location specified by --manifest does not exist or does not contain a config.php file.');
+                }
+
+                include $config;
+
+                if(!is_array($settings) || !isset($settings['database'])) {
+                    throw new \Exception('Config file found in location specified by --manifest does not appear to be a valid Symphony CMS config file.');
+                }
+
+                return array_merge(
+                    $databaseCredentials,
+                    $settings['database']
+                );
+            })
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('symphony')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('Path to SymphonyCMS core.')
+            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
+                if(class_exists('Symphony')) {
+                    (new Message\Message)
+                        ->message("WARNING - Symphony core has already been included via Composer. Ignoring --symphony.")
+                        ->foreground(Colour\Colour::FG_YELLOW)
+                        ->display()
+                    ;
+                    return;
+                } elseif(false === $path = realpath($context->find('symphony'))) {
+                    throw new \Exception("The path {$path} specified by --symphony does not appear to be valid");
+                } elseif(!file_exists("{$path}/vendor/autoload.php")) {
+                    throw new \Exception("No vendor autoload file could be located at the path {$path} specified by --symphony");
+                } else {
+                    include "{$path}/vendor/autoload.php";
+                }
+
+                return;
+            })
+            ->default(__DIR__ . '/../vendor/symphonycms/symphony-2')
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('database-name')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('database to use.')
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('database-user')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('name of database user')
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('database-pass')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_OPTIONAL)
+            ->description('password for project database user. Will prompt if omited')
+            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
+                return (new Prompt\Prompt('Enter Password'))
+                    ->flags(Prompt\Prompt::FLAG_SILENT)
+                    ->display()
+                ;
+            })
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('database-table-prefix')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('the prefix for all tables in this project. Default is tbl_')
+            ->default('tbl_')
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('database-host')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('host IP of database to use for deployment. Default is 127.0.0.1')
+            ->default('127.0.0.1')
+    )
+    ->append(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('database-port')
+            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->description('port number of database server. Default is 3306')
+            ->default('3306')
+    )
+;
+
+$argv = Input\InputHandlerFactory::build(
+    'Argv',
+    (new Input\InputCollection)
+        ->append($collection->find('h'))
+        ->append($collection->find('L'))
+);
+
+if($argv->find('h') === true) {
+    echo Cli\manpage(
+        basename(__FILE__),
+        '1.1.0',
+        'compare a JSON file section builder export to an existing Symphony CMS installation. The differences between the two will be displayed in a human readable format',
+        $collection,
+        Colour::FG_GREEN,
+        Colour::FG_WHITE,
+        [
+            'Examples' => 'diff -j /path/to/file.json --manifest=/path/to/manifest',
+            'Support' => "If you believe you have found a bug, please report it using the GitHub issue tracker at https://github.com/pointybeard/symphony-section-builder/issues, or better yet, fork the library and submit a pull request.\r\n\r\nCopyright 2018-2019 Alannah Kearney. Use 'diff -L' to see software licence information.\r\n",
+        ]
+    );
     exit;
 }
 
-$manifest = $args->find(['m', 'manifest']);
-if($manifest instanceof Argument) {
-    $config = realpath($manifest->value()) . DIRECTORY_SEPARATOR . "config.php";
-    if (!is_readable($config)) {
-        (new Message)
-            ->message(sprintf(
-                "ERROR - no config file found in %s.",
-                $manifest->value()
-            ))
-            ->prependDate(false)
-            ->foreground("red")
-            ->display()
-        ;
-        exit;
-    }
-    include $config;
-    $databaseCredentials = array_merge($databaseCredentials, $settings['database']);
-} else {
-    $creds = [
-        'db' => $args->find('database-name'),
-        'user' => $args->find('database-user'),
-        'password' => $args->find('database-password'),
-        'tbl_prefix' => $args->find('database-table-prefix'),
-        'host' => $args->find('database-host'),
-        'port' => $args->find('database-port'),
-    ];
-
-    foreach($creds as $key => $value) {
-        if(!($value instanceof Argument)) {
-            unset($creds[$key]);
-        } else {
-            $creds[$key] = (string)$value;
-        }
-    }
-
-    $databaseCredentials = array_merge($databaseCredentials, $creds);
-}
-
-// Check we have all the DB credentials we need
-if(is_null($databaseCredentials['user'])) {
-    (new Message)
-        ->message("ERROR - Database user not specified. Use --database-user or -m.")
-        ->prependDate(false)
-        ->foreground("red")
-        ->display()
-    ;
-    exit;
-}elseif(is_null($databaseCredentials['db'])) {
-    (new Message)
-        ->message("ERROR - Database name not specified. Use --database-name or -m.")
-        ->prependDate(false)
-        ->foreground("red")
-        ->display()
-    ;
+if($argv->find('L')) {
+    echo file_get_contents(__DIR__ . '/../LICENCE') . PHP_EOL;
     exit;
 }
 
-// Ask for password if there hasn't been one set
-if(is_null($databaseCredentials['password'])) {
-    $databaseCredentials['password'] = Prompt::display(
-        "Enter password for database user '{$databaseCredentials['user']}'",
-        Prompt::FLAG_SILENT)
-    ;
-}
+// Now we do validation with the entire collection
+$argv->bind($collection);
+
+$databaseCredentials = [
+    'host' => $argv->find('database-host'),
+    'port' => $argv->find('database-port'),
+    'db' => $argv->find('database-name'),
+    'user' => $argv->find('database-user'),
+    'password' =>  $argv->find('database-pass'),
+    'tbl_prefix' => $argv->find('database-table-prefix')
+];
 
 try {
     SymphonyPDO::instance((object)$databaseCredentials);
+} catch(\Exception $ex) {
+    Console\Functions\console_fatal_error("Unable to connect with the database credentials provided. Returned: " . $ex->getMessage(), "FATAL ERROR");
+}
+
+try{
+
     $count = (object)[
-        Lib\Diff\Record::OP_ADDED => 0,
-        Lib\Diff\Record::OP_REMOVED => 0,
-        Lib\Diff\Record::OP_UPDATED => 0,
+        Diff\Record::OP_ADDED => 0,
+        Diff\Record::OP_REMOVED => 0,
+        Diff\Record::OP_UPDATED => 0,
         "total" => 0
     ];
-    foreach (Lib\Diff::fromJsonFile($json->value()) as $d) {
+
+    foreach (Diff::fromJsonFile($json->value()) as $d) {
         $count->total++;
         $count->{$d->op}++;
 
         switch ($d->op) {
-            case Lib\Diff\Record::OP_ADDED:
-                printf("ADDED %s - %s" . PHP_EOL, $d->type, $d->nameNew);
+            case Diff\Record::OP_ADDED:
+                echo Colour\Colour::colourise(sprintf(
+                    "ADDED %s - %s", $d->type, $d->nameNew
+                ), Colour\Colour::FG_GREEN) . PHP_EOL;
                 break;
 
-            case Lib\Diff\Record::OP_REMOVED:
-                printf("REMOVED %s - %s" . PHP_EOL, $d->type, $d->nameOriginal);
+            case Diff\Record::OP_REMOVED:
+                echo Colour\Colour::colourise(sprintf(
+                    "REMOVED %s - %s", $d->type, $d->nameOriginal
+                ), Colour\Colour::FG_RED) . PHP_EOL;
                 break;
 
-            case Lib\Diff\Record::OP_UPDATED:
-                printf("UPDATED %s - %s changed from '%s' to '%s'" . PHP_EOL, $d->type, $d->nameOriginal, $d->valueOriginal, $d->valueNew);
+            case Diff\Record::OP_UPDATED:
+                echo Colour\Colour::colourise(sprintf(
+                    "UPDATED %s - %s changed from '%s' to '%s'",
+                    $d->type,
+                    $d->nameOriginal,
+                    $d->valueOriginal,
+                    $d->valueNew
+                ), Colour\Colour::FG_ORANGE) . PHP_EOL;
                 break;
 
         }
     }
 
-    (new Message)
+    (new Message\Message)
         ->message(sprintf(
             "Completed (%d total, %d added, %d updated, %d removed)",
             $count->total,
-            $count->{Lib\Diff\Record::OP_ADDED},
-            $count->{Lib\Diff\Record::OP_UPDATED},
-            $count->{Lib\Diff\Record::OP_REMOVED}
+            $count->{Diff\Record::OP_ADDED},
+            $count->{Diff\Record::OP_UPDATED},
+            $count->{Diff\Record::OP_REMOVED}
         ))
-        ->prependDate(false)
-        ->appendNewLine(true)
+        ->foreground(Colour\Colour::FG_GREEN)
         ->display()
     ;
 
-} catch (\Exception $ex) {
-    (new Message)
-        ->message(sprintf(
-            "ERROR - unable to diff. Returned: %s",
-            $ex->getMessage()
-        ))
-        ->prependDate(false)
-        ->foreground("red")
-        ->display()
-    ;
-    die;
+
+} catch(\Exception $ex) {
+    Console\Functions\console_fatal_error($ex->getMessage(), "FATAL ERROR");
 }

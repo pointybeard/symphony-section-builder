@@ -1,28 +1,42 @@
 {
     "name": "pointybeard/symphony-section-builder",
-    "description": "SymphonyCMS Section Builder",
+    "description": "Symphony CMS: Section Builder",
+    "homepage": "https://github.com/pointybeard/symphony-section-builder",
     "type": "library",
-    "require": {
-        "php": ">=7.2",
-        "pointybeard/property-bag": "^1.0",
-        "pointybeard/symphony-pdo": "^0.1",
-        "pointybeard/php-cli-lib": "~1.0"
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Alannah Kearney",
+            "email": "hi@alannahkearney.com",
+            "homepage": "http://alannahkearney.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/pointybeard/symphony-section-builder/issues",
+        "wiki": "https://github.com/pointybeard/symphony-section-builder/wiki"
     },
+    "require": {
+        "php": ">=7.3",
+        "pointybeard/symphony-pdo": "~0.1.0",
+        "pointybeard/helpers": "~1.2.0",
+        "pointybeard/symphonycms-console": "dev-integration",
+        "pointybeard/property-bag": "^1.0"
+    },
+    "repositories": [
+        {
+            "url": "https://github.com/pointybeard/console.git",
+            "type": "git"
+        }
+    ],
     "require-dev": {
         "symphonycms/symphony-2": "^2.7",
         "phpunit/phpunit": "^8"
     },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Alannah Kearney",
-            "email": "alannah@ruleandmake.com"
-        }
-    ],
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "pointybeard\\Symphony\\SectionBuilder\\": "src/"
+            "pointybeard\\Symphony\\": "src/"
         }
     }
 }

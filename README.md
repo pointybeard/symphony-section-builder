@@ -1,53 +1,53 @@
 # Symphony CMS: Section Builder
 
-- Version: v0.1.13
-- Date: April 07 2019
-- Requires: PHP7.2+
-- [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
-- [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
+-   Version: 1.0.0
+-   Date: June 8 2019
+-   [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
+-   [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
 
 A set of classes that assist with the creating and updating of sections and their fields.
 
 ## Installation
 
-This libary can be used standalone or as part of SymphonyCMS (including extensions) install.
+This libary can be used standalone or as part of a [Symphony CMS](https://getsymphony.com) installation (including Extension).
 
 ### Standalone
 
-Clone desired version from the GitHub repository with `git clone https://github.com/pointybeard/symphony-section-builder.git` then run `composer update` within that folder. Note, this will install dev library `symphonycms/symphony-2`.
+Clone desired version from the GitHub repository with `git clone https://github.com/pointybeard/symphony-section-builder.git` then run `composer update` within that folder. Note, this will install dev library `symphonycms/symphony-2` by default. Use `--no-dev` when running `composer update` to skip this.
 
 ### Using Composer
 
-To install via [Composer](http://getcomposer.org/), use `composer require pointybeard/symphony-section-builder` or add `"pointybeard/pointybeard/symphony-section-builder": "~0.1"` to your `composer.json` file.
+To install via [Composer](http://getcomposer.org/), use `composer require pointybeard/symphony-section-builder` or add `"pointybeard/pointybeard/symphony-section-builder": "~1.0"` to your `composer.json` file.
 
 And run composer to update your dependencies, for example:
 
     $ curl -s http://getcomposer.org/installer | php
     $ php composer.phar update
 
-Note that this method will NOT install any dev libraries, specifically `symphonycms/symphony-2`. Generally this is the desired behaviour, however, should the core SymphonyCMS library not get included anywhere via composer (e.g. Section Builder is being used as part of a library that doesn't already include SymphonyCMS), be use to use the `--dev` flag (e.g. `composer update --dev`) to ensure `symphonycms/symphony-2` is also installed.
+Note that this method will NOT install any dev libraries, specifically `symphonycms/symphony-2`. Generally this is the desired behaviour, however, should the core Symphony CMS library not get included anywhere via composer (e.g. Section Builder is being used as part of a library that doesn't already include Symphony CMS), be use to use the `--dev` flag (e.g. `composer update --dev`) to ensure `symphonycms/symphony-2` is also installed.
 
 ## Usage
 
 Quick example of how to use this library:
 
 ```php
-    use pointybeard\Symphony\SectionBuilder\Lib;
+    use pointybeard\Symphony\SectionBuilder\SectionBuilder;
+    use pointybeard\Symphony\SectionBuilder\SectionBuilder\Models;
 
     try {
-        $categories = Lib\Models\Section::loadFromHandle('categories');
-        if(!($categories instanceof Lib\Models\Section)) {
-            $categories = (new Lib\Models\Section)
+        $categories = Models\Section::loadFromHandle('categories');
+        if(!($categories instanceof Models\Section)) {
+            $categories = (new Models\Section)
                 ->name("Categories")
                 ->handle("categories")
                 ->navigationGroup("Content")
                 ->allowFiltering(true)
                 ->hideFromBackendNavigation(false)
                 ->addField(
-                    (new Lib\Models\Fields\Input)
+                    (new Models\Fields\Input)
                         ->label("Name")
                         ->elementName("name")
-                        ->location(Lib\AbstractField::PLACEMENT_MAIN_CONTENT)
+                        ->location(SectionBuilder\AbstractField::PLACEMENT_MAIN_CONTENT)
                         ->required(true)
                         ->showColumn(true)
                         ->validator("")
@@ -56,38 +56,38 @@ Quick example of how to use this library:
             ;
         }
 
-        $articles = Lib\Models\Section::loadFromHandle('articles');
-        if(!($articles instanceof Lib\Models\Section)) {
-            $articles = (new Lib\Models\Section)
+        $articles = Models\Section::loadFromHandle('articles');
+        if(!($articles instanceof Models\Section)) {
+            $articles = (new Models\Section)
                 ->name("Articles")
                 ->handle("articles")
                 ->navigationGroup("Content")
                 ->allowFiltering(true)
                 ->hideFromBackendNavigation(false)
                 ->addField(
-                    (new Lib\Models\Fields\Input)
+                    (new Models\Fields\Input)
                         ->label("Title")
                         ->elementName("title")
-                        ->location(Lib\AbstractField::PLACEMENT_MAIN_CONTENT)
+                        ->location(SectionBuilder\AbstractField::PLACEMENT_MAIN_CONTENT)
                         ->required(true)
                         ->showColumn(true)
                         ->validator("")
                 )
                 ->addField(
-                    (new Lib\Models\Fields\Textarea)
+                    (new Models\Fields\Textarea)
                         ->label("Body")
                         ->elementName("body")
-                        ->location(Lib\AbstractField::PLACEMENT_MAIN_CONTENT)
+                        ->location(SectionBuilder\AbstractField::PLACEMENT_MAIN_CONTENT)
                         ->required(true)
                         ->showColumn(true)
                         ->size(10)
                         ->formatter(null)
                 )
                 ->addField(
-                    (new Lib\Models\Fields\Date)
+                    (new Models\Fields\Date)
                         ->label("Created At")
                         ->elementName("date_created_at")
-                        ->location(Lib\AbstractField::PLACEMENT_SIDEBAR)
+                        ->location(SectionBuilder\AbstractField::PLACEMENT_SIDEBAR)
                         ->required(true)
                         ->showColumn(true)
                         ->prePopulate("now")
@@ -95,10 +95,10 @@ Quick example of how to use this library:
                         ->time(true)
                 )
                 ->addField(
-                    (new Lib\Models\Fields\Select)
+                    (new Models\Fields\Select)
                         ->label("Categories")
                         ->elementName("categories")
-                        ->location(Lib\AbstractField::PLACEMENT_SIDEBAR)
+                        ->location(SectionBuilder\AbstractField::PLACEMENT_SIDEBAR)
                         ->required(true)
                         ->showColumn(true)
                         ->allowMultipleSelection(true)
@@ -124,10 +124,10 @@ Quick example of how to use this library:
 Run `bin/import` from the command line or use code like this:
 
 ```php
-    use pointybeard\Symphony\SectionBuilder\Lib;
+    use pointybeard\Symphony\SectionBuilder\SectionBuilder;
 
     try {
-        Lib\Import::fromJsonFile("/path/to/some/file.json");
+        SectionBuilder\Import::fromJsonFile("/path/to/some/file.json");
         print "Success!!" . PHP_EOL;
 
     } catch (\Exception $ex) {
@@ -140,7 +140,7 @@ Use flag `FLAG_SKIP_ORDERING` if importing partial section JSON. This helps
 to avoid a circular dependency exception being thrown. Flags are supported by `fromJsonFile()`, `fromJsonString()`, and `fromObject()`. For example:
 
 ```PHP
-    Lib\Import::fromJsonFile("/path/to/some/file.json", Lib\Import::FLAG_SKIP_ORDERING);
+    SectionBuilder\Import::fromJsonFile("/path/to/some/file.json", SectionBuilder\Import::FLAG_SKIP_ORDERING);
 ```
 
 JSON must be an array of sections and look like this:
@@ -196,8 +196,8 @@ JSON must be an array of sections and look like this:
 Run `bin/export` from the command line or use the `__toString()`, `__toJson()`, and/or `__toArray()` methods provided by `AbstractField` and `Section`. For example:
 
 ```php
-    use pointybeard\Symphony\SectionBuilder\Lib;
-    $section = Lib\Models\Section::loadFromHandle('categories');
+    use pointybeard\Symphony\SectionBuilder\SectionBuilder;
+    $section = Models\Section::loadFromHandle('categories');
 
     print (string)$section;
     print $section->__toJson();
@@ -209,7 +209,7 @@ If a full export is necessary, use the `all()` method and build the array before
 
 ```php
     $output = ["sections" => []];
-    foreach(Lib\Models\Section::all() as $section) {
+    foreach(Models\Section::all() as $section) {
         // We use json_decode() to ensure ids (id and sectionId) are removed
         // from the output. To keep ids, use __toArray()
         $output["sections"][] = json_decode((string)$section, true);
@@ -225,10 +225,10 @@ Note that IDs (specifically Section and Field `id` and Field `sectionId` propert
 You can compare a database with a JSON export via `bin/diff` from the command line or use code like this:
 
 ```php
-use pointybeard\Symphony\SectionBuilder\Lib;
+use pointybeard\Symphony\SectionBuilder\SectionBuilder;
 
 try {
-    foreach(Lib\Diff::fromJsonFile("/path/to/some/file.json")){
+    foreach(SectionBuilder\Diff::fromJsonFile("/path/to/some/file.json")){
         // Print changes found here ...
     }
 
