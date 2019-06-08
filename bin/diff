@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 // This just avoids PHP notices from not having a DOCROOT set.
 define("DOCROOT", realpath(__DIR__ . '/../'));
 
@@ -15,6 +17,7 @@ use pointybeard\Helpers\Cli\Prompt;
 use pointybeard\Helpers\Cli\Input;
 use pointybeard\Helpers\Cli\Colour\Colour;
 use pointybeard\Helpers\Functions\Cli;
+use pointybeard\Helpers\Functions\Debug;
 
 $databaseCredentials = [
     'host' => "127.0.0.1",
@@ -26,19 +29,20 @@ $databaseCredentials = [
 ];
 
 $collection = (new Input\InputCollection())
-    ->append(
-        Input\InputTypeFactory::build('Flag')
-            ->name('h')
+    ->add(
+        Input\InputTypeFactory::build('LongOption')
+            ->name('help')
+            ->short('h')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL)
             ->description('print this help information')
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('Flag')
             ->name('L')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL)
             ->description('View the software licence this script is released under')
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('json')
             ->short('j')
@@ -62,7 +66,7 @@ $collection = (new Input\InputCollection())
                 return $file;
             })
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('manifest')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
@@ -87,7 +91,7 @@ $collection = (new Input\InputCollection())
                 );
             })
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('symphony')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
@@ -112,19 +116,19 @@ $collection = (new Input\InputCollection())
             })
             ->default(__DIR__ . '/../vendor/symphonycms/symphony-2')
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('database-name')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('database to use.')
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('database-user')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('name of database user')
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('database-pass')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_OPTIONAL)
@@ -136,21 +140,21 @@ $collection = (new Input\InputCollection())
                 ;
             })
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('database-table-prefix')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('the prefix for all tables in this project. Default is tbl_')
             ->default('tbl_')
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('database-host')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('host IP of database to use for deployment. Default is 127.0.0.1')
             ->default('127.0.0.1')
     )
-    ->append(
+    ->add(
         Input\InputTypeFactory::build('LongOption')
             ->name('database-port')
             ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
@@ -162,8 +166,9 @@ $collection = (new Input\InputCollection())
 $argv = Input\InputHandlerFactory::build(
     'Argv',
     (new Input\InputCollection)
-        ->append($collection->find('h'))
-        ->append($collection->find('L'))
+        ->add($collection->find('h'))
+        ->add($collection->find('L')),
+    Input\AbstractInputHandler::FLAG_BIND_SKIP_VALIDATION
 );
 
 if($argv->find('h') === true) {
@@ -187,22 +192,31 @@ if($argv->find('L')) {
     exit;
 }
 
-// Now we do validation with the entire collection
-$argv->bind($collection);
+try {
+    // Now we do validation with the entire collection
+    $argv->bind($collection);
+} catch(Input\Exceptions\RequiredInputMissingException | Input\Exceptions\RequiredInputMissingValueException $ex) {
+    echo Colour::colourise("error: {$ex->getMessage()}", Colour::FG_RED).PHP_EOL . Cli\usage(basename(__FILE__), $collection).PHP_EOL.PHP_EOL.'Try `-h` for more options.'.PHP_EOL;
+    exit(1);
+}
 
-$databaseCredentials = [
-    'host' => $argv->find('database-host'),
-    'port' => $argv->find('database-port'),
-    'db' => $argv->find('database-name'),
-    'user' => $argv->find('database-user'),
-    'password' =>  $argv->find('database-pass'),
-    'tbl_prefix' => $argv->find('database-table-prefix')
-];
+if(null === $argv->find('manifest')) {
+    $databaseCredentials = [
+        'host' => $argv->find('database-host'),
+        'port' => $argv->find('database-port'),
+        'db' => $argv->find('database-name'),
+        'user' => $argv->find('database-user'),
+        'password' =>  $argv->find('database-pass'),
+        'tbl_prefix' => $argv->find('database-table-prefix')
+    ];
+} else {
+    $databaseCredentials = $argv->find('manifest');
+}
 
 try {
     SymphonyPDO::instance((object)$databaseCredentials);
 } catch(\Exception $ex) {
-    Console\Functions\console_fatal_error("Unable to connect with the database credentials provided. Returned: " . $ex->getMessage(), "FATAL ERROR");
+    Cli\display_error_and_exit('Unable to connect with the database credentials provided. Returned: ' . $ex->getMessage(), 'FATAL ERROR');
 }
 
 try{
@@ -221,13 +235,13 @@ try{
         switch ($d->op) {
             case Diff\Record::OP_ADDED:
                 echo Colour\Colour::colourise(sprintf(
-                    "ADDED %s - %s", $d->type, $d->nameNew
+                    'ADDED %s - %s', $d->type, $d->nameNew
                 ), Colour\Colour::FG_GREEN) . PHP_EOL;
                 break;
 
             case Diff\Record::OP_REMOVED:
                 echo Colour\Colour::colourise(sprintf(
-                    "REMOVED %s - %s", $d->type, $d->nameOriginal
+                    'REMOVED %s - %s', $d->type, $d->nameOriginal
                 ), Colour\Colour::FG_RED) . PHP_EOL;
                 break;
 
@@ -246,7 +260,7 @@ try{
 
     (new Message\Message)
         ->message(sprintf(
-            "Completed (%d total, %d added, %d updated, %d removed)",
+            'Completed (%d total, %d added, %d updated, %d removed)',
             $count->total,
             $count->{Diff\Record::OP_ADDED},
             $count->{Diff\Record::OP_UPDATED},
@@ -258,5 +272,5 @@ try{
 
 
 } catch(\Exception $ex) {
-    Console\Functions\console_fatal_error($ex->getMessage(), "FATAL ERROR");
+    Cli\display_error_and_exit($ex->getMessage(), 'FATAL ERROR');
 }
