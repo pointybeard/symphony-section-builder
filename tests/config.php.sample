@@ -1,0 +1,13 @@
+<?php
+$settings = [
+    ###### DATABASE ######
+    'database' => [
+        'host' => '127.0.0.1',
+        'port' => '3306',
+        'user' => 'YYYY',
+        'password' => 'XXXX',
+        'db' => 'AAAA',
+        'tbl_prefix' => 'tbl_',
+    ],
+    ########
+];
