@@ -29,9 +29,12 @@ abstract class AbstractField extends AbstractTableModel
 
     public function installEntriesDataTable(): bool
     {
-        return false !== SymphonyPDO\Loader::instance()->exec(
-            static::getEntriesDataCreateTableSyntax()
-        );
+        $tablePrefix = SymphonyPDO\Loader::getCredentials()->tbl_prefix;
+        $sql = static::getEntriesDataCreateTableSyntax();
+        if ($tablePrefix !== 'tbl_') {
+            $sql = preg_replace('/tbl_(\S+?)([\s\.,]|$)/', $tablePrefix.'\\1\\2', $sql);
+        }
+        return false !== SymphonyPDO\Loader::instance()->exec($sql);
     }
 
     public function __toArray(): array
