@@ -160,6 +160,12 @@ class Import
                 : time()
             );
 
+            // authorId and modificationAuthorId are optional field but they
+            // must be set still. The primary author if for any symphony install
+            // is 1, so we'll use that.
+            $s->authorId = $s->authorId ?? 1;
+            $s->modificationAuthorId = $s->modificationAuthorId ?? 1;
+
             $section = Models\Section::loadFromHandle($s->handle);
             if (!($section instanceof Models\Section)) {
                 $section = (new Models\Section())
