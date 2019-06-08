@@ -45,8 +45,8 @@ $collection = (new Cli\Input\InputCollection())
 include DOCROOT . '/src/Includes/common.php';
 
 try {
-    SymphonyPDO::instance((object)$databaseCredentials);
-    SectionBuilder\Import::fromJsonFile($json->value());
+    SymphonyPDO\Loader::instance((object)$databaseCredentials);
+    SectionBuilder\Import::fromJsonFile($argv->find('json'));
 
 } catch(Exception $ex) {
     Functions\Cli\display_error_and_exit(sprintf(
