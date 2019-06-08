@@ -2,19 +2,33 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Traits;
+namespace pointybeard\Symphony\SectionBuilder\Traits;
 
-use pointybeard\PropertyBag\Lib as PropertyBag;
-use pointybeard\Symphony\SectionBuilder\SectionBuilder;
+use pointybeard\Symphony\SectionBuilder;
 
 trait hasFetchAssociatedFieldTrait
 {
-    protected function fetchAssociatedField(PropertyBag $field)
+    protected function fetchAssociatedField(string $fieldName): SectionBuilder\AbstractField
     {
-        return
-            $this->$field->value instanceof SectionBuilder\AbstractField
-                ? $this->$field->value
-                : SectionBuilder\AbstractField::loadFromId((int) $this->$field->value->value)
-        ;
+        if (!isset($this->$fieldName)) {
+            throw new SectionBuilder\Exceptions\SectionBuilderException("{$fieldName} does not exist");
+        }
+
+        $value = $this->$fieldName->value;
+
+        if ($value instanceof SectionBuilder\AbstractField) {
+            $field = $value;
+        } elseif ($value instanceof PropertyBag) {
+            try {
+                $field = SectionBuilder\AbstractField::loadFromId((int) $value->value);
+            } catch (\Exception $ex) {
+                var_dump($ex);
+                die;
+            }
+        } else {
+            throw new SectionBuilder\Exceptions\SectionBuilderException(self::class."::{$fieldName} is not an instance of AbstractField or PropertyBag");
+        }
+
+        return $field;
     }
 }

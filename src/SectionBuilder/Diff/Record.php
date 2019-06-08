@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Diff;
+namespace pointybeard\Symphony\SectionBuilder\Diff;
 
 class Record
 {

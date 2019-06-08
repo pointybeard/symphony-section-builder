@@ -31,8 +31,8 @@ Note that this method will NOT install any dev libraries, specifically `symphony
 Quick example of how to use this library:
 
 ```php
-    use pointybeard\Symphony\SectionBuilder\SectionBuilder;
-    use pointybeard\Symphony\SectionBuilder\SectionBuilder\Models;
+    use pointybeard\Symphony\SectionBuilder;
+    use pointybeard\Symphony\SectionBuilder\Models;
 
     try {
         $categories = Models\Section::loadFromHandle('categories');
@@ -124,7 +124,7 @@ Quick example of how to use this library:
 Run `bin/import` from the command line or use code like this:
 
 ```php
-    use pointybeard\Symphony\SectionBuilder\SectionBuilder;
+    use pointybeard\Symphony\SectionBuilder;
 
     try {
         SectionBuilder\Import::fromJsonFile("/path/to/some/file.json");
@@ -196,7 +196,7 @@ JSON must be an array of sections and look like this:
 Run `bin/export` from the command line or use the `__toString()`, `__toJson()`, and/or `__toArray()` methods provided by `AbstractField` and `Section`. For example:
 
 ```php
-    use pointybeard\Symphony\SectionBuilder\SectionBuilder;
+    use pointybeard\Symphony\SectionBuilder;
     $section = Models\Section::loadFromHandle('categories');
 
     print (string)$section;
@@ -225,7 +225,7 @@ Note that IDs (specifically Section and Field `id` and Field `sectionId` propert
 You can compare a database with a JSON export via `bin/diff` from the command line or use code like this:
 
 ```php
-use pointybeard\Symphony\SectionBuilder\SectionBuilder;
+use pointybeard\Symphony\SectionBuilder;
 
 try {
     foreach(SectionBuilder\Diff::fromJsonFile("/path/to/some/file.json")){

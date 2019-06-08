@@ -8,269 +8,93 @@ define("DOCROOT", realpath(__DIR__ . '/../'));
 
 include DOCROOT . '/vendor/autoload.php';
 
-use SymphonyPDO\Loader as SymphonyPDO;
-use Symphony\SectionBuilder\SectionBuilder\Diff;
-use Symphony\Console;
-
-use pointybeard\Helpers\Cli\Message;
-use pointybeard\Helpers\Cli\Prompt;
-use pointybeard\Helpers\Cli\Input;
+use pointybeard\Symphony\SectionBuilder;
+use pointybeard\Helpers\Cli;
+use pointybeard\Helpers\Functions;
 use pointybeard\Helpers\Cli\Colour\Colour;
-use pointybeard\Helpers\Functions\Cli;
-use pointybeard\Helpers\Functions\Debug;
 
-$databaseCredentials = [
-    'host' => "127.0.0.1",
-    'port' => "3306",
-    'db' => null,
-    'user' => null,
-    'password' =>  null,
-    'tbl_prefix' => "tbl_"
+$manpage = [
+    basename(__FILE__),
+    '1.0.0',
+    'compare a JSON file section builder export to an existing Symphony CMS installation. The differences between the two will be displayed in a human readable format',
+    'diff -j /path/to/file.json --manifest=/path/to/manifest',
 ];
 
-$collection = (new Input\InputCollection())
+$collection = (new Cli\Input\InputCollection())
     ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('help')
-            ->short('h')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL)
-            ->description('print this help information')
-    )
-    ->add(
-        Input\InputTypeFactory::build('Flag')
-            ->name('L')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL)
-            ->description('View the software licence this script is released under')
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
+        Cli\Input\InputTypeFactory::build('LongOption')
             ->name('json')
             ->short('j')
-            ->flags(Input\AbstractInputType::FLAG_REQUIRED | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+            ->flags(Cli\Input\AbstractInputType::FLAG_REQUIRED | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('Path to the input JSON data')
-            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
+            ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
                 // Make sure -j (--json) is a valid file that can be read
-                $file = $context->find('json');
-
-                if (!is_readable($file)) {
-                    throw new \Exception('The file specified via option --json does not exist or is not readable.');
+                if(false === Functions\Json\json_validate_file($context->find('json'), $code, $message)) {
+                    throw new SectionBuilder\Exceptions\SectionBuilderException(sprintf(
+                        'The file specified via option --json does not exist or is an invalid JSON document. Returned: %s',
+                        $message
+                    ));
                 }
 
-                // Now make sure it is valid JSON
-                try {
-                    $json = json_decode(file_get_contents($file), false, 512, JSON_THROW_ON_ERROR);
-                } catch (JsonException $ex) {
-                    throw new \Exception(sprintf('The file specified via option --json does not appear to be a valid JSON ddocument. Returned: %s: %s', $ex->getCode(), $ex->getMessage()));
-                }
-
-                return $file;
+                return $context->find('json');
             })
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('manifest')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('Path to the manifest folder containing a config.php. This is an alternative to providing database credentials and instead they are read from config.php')
-            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) use ($databaseCredentials) {
-
-                $config = realpath($context->find('manifest')) . DIRECTORY_SEPARATOR . "config.php";
-
-                if ($config === false || !is_readable($config)) {
-                    throw new \Exception('The manifest location specified by --manifest does not exist or does not contain a config.php file.');
-                }
-
-                include $config;
-
-                if(!is_array($settings) || !isset($settings['database'])) {
-                    throw new \Exception('Config file found in location specified by --manifest does not appear to be a valid Symphony CMS config file.');
-                }
-
-                return array_merge(
-                    $databaseCredentials,
-                    $settings['database']
-                );
-            })
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('symphony')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('Path to SymphonyCMS core.')
-            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
-                if(class_exists('Symphony')) {
-                    (new Message\Message)
-                        ->message("WARNING - Symphony core has already been included via Composer. Ignoring --symphony.")
-                        ->foreground(Colour\Colour::FG_YELLOW)
-                        ->display()
-                    ;
-                    return;
-                } elseif(false === $path = realpath($context->find('symphony'))) {
-                    throw new \Exception("The path {$path} specified by --symphony does not appear to be valid");
-                } elseif(!file_exists("{$path}/vendor/autoload.php")) {
-                    throw new \Exception("No vendor autoload file could be located at the path {$path} specified by --symphony");
-                } else {
-                    include "{$path}/vendor/autoload.php";
-                }
-
-                return;
-            })
-            ->default(__DIR__ . '/../vendor/symphonycms/symphony-2')
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('database-name')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('database to use.')
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('database-user')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('name of database user')
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('database-pass')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_OPTIONAL)
-            ->description('password for project database user. Will prompt if omited')
-            ->validator(function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
-                return (new Prompt\Prompt('Enter Password'))
-                    ->flags(Prompt\Prompt::FLAG_SILENT)
-                    ->display()
-                ;
-            })
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('database-table-prefix')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('the prefix for all tables in this project. Default is tbl_')
-            ->default('tbl_')
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('database-host')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('host IP of database to use for deployment. Default is 127.0.0.1')
-            ->default('127.0.0.1')
-    )
-    ->add(
-        Input\InputTypeFactory::build('LongOption')
-            ->name('database-port')
-            ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('port number of database server. Default is 3306')
-            ->default('3306')
     )
 ;
 
-$argv = Input\InputHandlerFactory::build(
-    'Argv',
-    (new Input\InputCollection)
-        ->add($collection->find('h'))
-        ->add($collection->find('L')),
-    Input\AbstractInputHandler::FLAG_BIND_SKIP_VALIDATION
-);
-
-if($argv->find('h') === true) {
-    echo Cli\manpage(
-        basename(__FILE__),
-        '1.1.0',
-        'compare a JSON file section builder export to an existing Symphony CMS installation. The differences between the two will be displayed in a human readable format',
-        $collection,
-        Colour::FG_GREEN,
-        Colour::FG_WHITE,
-        [
-            'Examples' => 'diff -j /path/to/file.json --manifest=/path/to/manifest',
-            'Support' => "If you believe you have found a bug, please report it using the GitHub issue tracker at https://github.com/pointybeard/symphony-section-builder/issues, or better yet, fork the library and submit a pull request.\r\n\r\nCopyright 2018-2019 Alannah Kearney. Use 'diff -L' to see software licence information.\r\n",
-        ]
-    );
-    exit;
-}
-
-if($argv->find('L')) {
-    echo file_get_contents(__DIR__ . '/../LICENCE') . PHP_EOL;
-    exit;
-}
-
-try {
-    // Now we do validation with the entire collection
-    $argv->bind($collection);
-} catch(Input\Exceptions\RequiredInputMissingException | Input\Exceptions\RequiredInputMissingValueException $ex) {
-    echo Colour::colourise("error: {$ex->getMessage()}", Colour::FG_RED).PHP_EOL . Cli\usage(basename(__FILE__), $collection).PHP_EOL.PHP_EOL.'Try `-h` for more options.'.PHP_EOL;
-    exit(1);
-}
-
-if(null === $argv->find('manifest')) {
-    $databaseCredentials = [
-        'host' => $argv->find('database-host'),
-        'port' => $argv->find('database-port'),
-        'db' => $argv->find('database-name'),
-        'user' => $argv->find('database-user'),
-        'password' =>  $argv->find('database-pass'),
-        'tbl_prefix' => $argv->find('database-table-prefix')
-    ];
-} else {
-    $databaseCredentials = $argv->find('manifest');
-}
-
-try {
-    SymphonyPDO::instance((object)$databaseCredentials);
-} catch(\Exception $ex) {
-    Cli\display_error_and_exit('Unable to connect with the database credentials provided. Returned: ' . $ex->getMessage(), 'FATAL ERROR');
-}
+include DOCROOT . '/src/Includes/common.php';
 
 try{
 
     $count = (object)[
-        Diff\Record::OP_ADDED => 0,
-        Diff\Record::OP_REMOVED => 0,
-        Diff\Record::OP_UPDATED => 0,
+        SectionBuilder\Diff\Record::OP_ADDED => 0,
+        SectionBuilder\Diff\Record::OP_REMOVED => 0,
+        SectionBuilder\Diff\Record::OP_UPDATED => 0,
         "total" => 0
     ];
 
-    foreach (Diff::fromJsonFile($json->value()) as $d) {
+    foreach (SectionBuilder\Diff::fromJsonFile($argv->find('json')) as $d) {
         $count->total++;
         $count->{$d->op}++;
 
         switch ($d->op) {
-            case Diff\Record::OP_ADDED:
-                echo Colour\Colour::colourise(sprintf(
+            case SectionBuilder\Diff\Record::OP_ADDED:
+                echo Colour::colourise(sprintf(
                     'ADDED %s - %s', $d->type, $d->nameNew
-                ), Colour\Colour::FG_GREEN) . PHP_EOL;
+                ), Colour::FG_GREEN) . PHP_EOL;
                 break;
 
-            case Diff\Record::OP_REMOVED:
-                echo Colour\Colour::colourise(sprintf(
+            case SectionBuilder\Diff\Record::OP_REMOVED:
+                echo Colour::colourise(sprintf(
                     'REMOVED %s - %s', $d->type, $d->nameOriginal
-                ), Colour\Colour::FG_RED) . PHP_EOL;
+                ), Colour::FG_RED) . PHP_EOL;
                 break;
 
-            case Diff\Record::OP_UPDATED:
-                echo Colour\Colour::colourise(sprintf(
+            case SectionBuilder\Diff\Record::OP_UPDATED:
+                echo Colour::colourise(sprintf(
                     "UPDATED %s - %s changed from '%s' to '%s'",
                     $d->type,
                     $d->nameOriginal,
                     $d->valueOriginal,
                     $d->valueNew
-                ), Colour\Colour::FG_ORANGE) . PHP_EOL;
+                ), Colour::FG_YELLOW) . PHP_EOL;
                 break;
 
         }
     }
 
-    (new Message\Message)
+    (new Cli\Message\Message)
         ->message(sprintf(
             'Completed (%d total, %d added, %d updated, %d removed)',
             $count->total,
-            $count->{Diff\Record::OP_ADDED},
-            $count->{Diff\Record::OP_UPDATED},
-            $count->{Diff\Record::OP_REMOVED}
+            $count->{SectionBuilder\Diff\Record::OP_ADDED},
+            $count->{SectionBuilder\Diff\Record::OP_UPDATED},
+            $count->{SectionBuilder\Diff\Record::OP_REMOVED}
         ))
-        ->foreground(Colour\Colour::FG_GREEN)
+        ->foreground(Colour::FG_GREEN)
         ->display()
     ;
 
 
-} catch(\Exception $ex) {
-    Cli\display_error_and_exit($ex->getMessage(), 'FATAL ERROR');
+} catch(Exception $ex) {
+    Functions\Cli\display_error_and_exit($ex->getMessage(), 'FATAL ERROR');
 }

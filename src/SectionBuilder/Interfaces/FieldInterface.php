@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Interfaces;
+namespace pointybeard\Symphony\SectionBuilder\Interfaces;
 
 interface FieldInterface
 {

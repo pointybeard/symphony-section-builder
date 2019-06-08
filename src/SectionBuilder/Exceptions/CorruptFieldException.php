@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Exceptions;
+namespace pointybeard\Symphony\SectionBuilder\Exceptions;
 
-class CorruptFieldException extends \Exception
+class CorruptFieldException extends SectionBuilderException
 {
 }

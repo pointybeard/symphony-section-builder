@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Models;
+namespace pointybeard\Symphony\SectionBuilder\Models;
 
 use SymphonyPDO\Lib\ResultIterator;
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\AbstractTableModel;
+use pointybeard\Symphony\SectionBuilder\AbstractTableModel;
 
 class SectionAssociation extends AbstractTableModel
 {
@@ -58,7 +58,7 @@ class SectionAssociation extends AbstractTableModel
         ];
     }
 
-    public function __toArray()
+    public function __toArray(): array
     {
         $mapping = self::getFieldMappings();
         $data = $this->getDatabaseReadyData();
@@ -139,7 +139,7 @@ class SectionAssociation extends AbstractTableModel
         return true == $value ? 'yes' : 'no';
     }
 
-    public static function fetchByChildSectionId($sectionId): self
+    public static function fetchByChildSectionId($sectionId): ResultIterator
     {
         $query = \SymphonyPDO\Loader::instance()->prepare(sprintf(
             'SELECT * FROM `%s` WHERE `child_section_id` = :sectionId',
@@ -154,7 +154,7 @@ class SectionAssociation extends AbstractTableModel
         );
     }
 
-    public function commit(): self
+    public function commit(): AbstractTableModel
     {
         $data = self::getDatabaseReadyData();
         $table = self::TABLE;

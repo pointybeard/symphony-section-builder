@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Models\Fields;
+namespace pointybeard\Symphony\SectionBuilder\Models\Fields;
 
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\AbstractField;
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\Interfaces;
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\Traits;
+use pointybeard\Symphony\SectionBuilder\AbstractField;
+use pointybeard\Symphony\SectionBuilder\Interfaces;
+use pointybeard\Symphony\SectionBuilder\Traits;
 use pointybeard\PropertyBag\Lib;
 
 class Select extends AbstractField implements Interfaces\FieldInterface, Interfaces\FieldAssociationInterface

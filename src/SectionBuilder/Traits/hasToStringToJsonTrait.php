@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Traits;
+namespace pointybeard\Symphony\SectionBuilder\Traits;
 
 trait hasToStringToJsonTrait
 {

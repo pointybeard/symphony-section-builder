@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Models;
+namespace pointybeard\Symphony\SectionBuilder\Models;
 
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\AbstractField;
+use pointybeard\Symphony\SectionBuilder\AbstractField;
 use pointybeard\PropertyBag\Lib;
 use SymphonyPDO;
 use SymphonyPDO\Lib\ResultIterator;
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\AbstractTableModel;
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\Exceptions;
+use pointybeard\Symphony\SectionBuilder\AbstractTableModel;
+use pointybeard\Symphony\SectionBuilder\Exceptions;
 
 class Section extends AbstractTableModel
 {
@@ -124,7 +124,7 @@ class Section extends AbstractTableModel
         ];
     }
 
-    public static function loadFromName(string $name): self
+    public static function loadFromName(string $name): ?self
     {
         $db = SymphonyPDO\Loader::instance();
 
@@ -132,13 +132,15 @@ class Section extends AbstractTableModel
         $query->bindParam(':name', $name, \PDO::PARAM_STR);
         $result = $query->execute();
 
-        return (new ResultIterator(
+        $section = (new ResultIterator(
             self::class,
             $query
         ))->current();
+
+        return ($section instanceof self) ? $section : null;
     }
 
-    public static function loadFromHandle(string $handle): self
+    public static function loadFromHandle(string $handle): ?self
     {
         $db = SymphonyPDO\Loader::instance();
 
@@ -146,10 +148,12 @@ class Section extends AbstractTableModel
         $query->bindParam(':handle', $handle, \PDO::PARAM_STR);
         $result = $query->execute();
 
-        return (new ResultIterator(
+        $section = (new ResultIterator(
             self::class,
             $query
         ))->current();
+
+        return ($section instanceof self) ? $section : null;
     }
 
     protected function findNextSortOrderValue(): int
@@ -191,7 +195,7 @@ class Section extends AbstractTableModel
         ];
     }
 
-    public function commit(): self
+    public function commit(): AbstractTableModel
     {
         $this->initiliseExistingFields();
 
@@ -258,7 +262,7 @@ class Section extends AbstractTableModel
         return $this;
     }
 
-    public function associations(): SectionAssociation
+    public function associations(): SymphonyPDO\Lib\ResultIterator
     {
         return SectionAssociation::fetchByChildSectionId((int) $this->id->value);
     }
@@ -278,8 +282,8 @@ class Section extends AbstractTableModel
             $query->bindParam(':sectionId', $sectionId, \PDO::PARAM_INT);
             $result = $query->execute();
 
-            while ($fieldId = $query->fetchColumn()) {
-                $this->addField(AbstractField::loadFromId($fieldId));
+            while (false !== $fieldId = $query->fetchColumn()) {
+                $this->addField(AbstractField::loadFromId((int) $fieldId));
             }
         }
     }

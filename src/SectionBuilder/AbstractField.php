@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder;
+namespace pointybeard\Symphony\SectionBuilder;
 
 use SymphonyPDO;
 use SymphonyPDO\Lib\ResultIterator;
+use pointybeard\Helpers\Functions\Flags;
 
 abstract class AbstractField extends AbstractTableModel
 {
@@ -49,7 +50,7 @@ abstract class AbstractField extends AbstractTableModel
                     $properties['name'] => $this->{$properties['name']}->value,
                 ] + $output;
             } elseif (isset($customData[$name])) {
-                if (AbstractTableModel::isFlagSet($properties['flags'], self::FLAG_FIELD)) {
+                if (Flags\is_flag_set($properties['flags'], self::FLAG_FIELD)) {
                     $associatedField = $this->fetchAssociatedField($properties['name']);
                     $output['custom'][$properties['name']] = [
                         'section' => (string) $associatedField->section()->handle,
@@ -133,7 +134,7 @@ abstract class AbstractField extends AbstractTableModel
         return "tbl_fields_{$type}";
     }
 
-    public static function loadFromElementName(string $elementName, string $sectionHandle): string
+    public static function loadFromElementName(string $elementName, string $sectionHandle): AbstractTableModel
     {
         $query = SymphonyPDO\Loader::instance()->prepare(
             'SELECT f.*, s.handle
@@ -151,10 +152,10 @@ abstract class AbstractField extends AbstractTableModel
             throw new Exceptions\NoSuchFieldException("Unable to locate field with element name '{$elementName}'.");
         }
 
-        return self::loadFromId($id);
+        return self::loadFromId((int) $id);
     }
 
-    public static function loadFromId(int $id): self
+    public static function loadFromId(int $id): AbstractTableModel
     {
         $db = SymphonyPDO\Loader::instance();
 
@@ -235,7 +236,7 @@ abstract class AbstractField extends AbstractTableModel
         ];
     }
 
-    public function commit(): self
+    public function commit(): AbstractTableModel
     {
         $field = &$this;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder;
+namespace pointybeard\Symphony\SectionBuilder;
 
 use SymphonyPDO;
 use SymphonyPDO\Lib\ResultIterator;
@@ -93,6 +93,11 @@ abstract class AbstractTableModel extends PropertyBag
         return $value;
     }
 
+    public function __isset($name)
+    {
+        return isset($this->properties[$name]);
+    }
+
     public function __set($property, $value)
     {
         $name = $property;
@@ -107,11 +112,6 @@ abstract class AbstractTableModel extends PropertyBag
             if (isset($mapping['flags'])) {
                 $value = self::enforceType($value, $mapping['flags']);
             }
-
-            //if(Flags\is_flag_set($mapping['flags'], self::FLAG_IMMUTABLE)) {
-            //    $this->{$name}(new ImmutableProperty($name, $value));
-            //    return true;
-            //}
         }
 
         return parent::__set($name, $value);
@@ -130,7 +130,7 @@ abstract class AbstractTableModel extends PropertyBag
         );
     }
 
-    public static function loadFromId($id): self
+    public static function loadFromId(int $id): self
     {
         $db = SymphonyPDO\Loader::instance();
 

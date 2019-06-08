@@ -2,14 +2,24 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder;
+namespace pointybeard\Symphony\SectionBuilder;
+
+use pointybeard\Helpers\Functions\Flags;
 
 class Diff
 {
-    public static function fromJsonFile(string $file): array
+    public const FLAG_IGNORE_NOISY_PROPERTIES = 0x0001;
+    public static $noisyProperties = ['dateModifiedAtGMT', 'dateModifiedAt', 'dateCreatedAtGMT', 'dateCreatedAt', 'modificationAuthorId', 'authorId', 'sortOrder', 'location'];
+
+    public static function setNoisyProperties(array $propertyNames = [])
+    {
+        self::$noisyProperties = $propertyNames;
+    }
+
+    public static function fromJsonFile(string $file, int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
     {
         if (!is_readable($file)) {
-            throw new \Exception(sprintf(
+            throw new Exceptions\SectionBuilderException(sprintf(
                 "The file '%s' is not readable.",
                 $file
             ));
@@ -18,11 +28,11 @@ class Diff
         return self::fromJsonString(file_get_contents($file));
     }
 
-    public static function fromJsonString(string $string): array
+    public static function fromJsonString(string $string, int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
     {
         $json = json_decode($string);
         if (false == $json || null === $json) {
-            throw new \Exception(
+            throw new Exceptions\SectionBuilderException(
                 'String is not a valid JSON document.'
             );
         }
@@ -32,7 +42,7 @@ class Diff
         return self::fromObject($json);
     }
 
-    public static function fromObject(\StdClass $data): array
+    public static function fromObject(\stdClass $data, int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
     {
         $result = [];
 
@@ -53,14 +63,14 @@ class Diff
             } else {
                 foreach ($section::getFieldMappings() as $name => $properties) {
                     $nameActual = $properties['name'];
-                    if (!isset($s->$nameActual)) {
-                        // This will only really trigger for ID, so we can skip it.
+
+                    if (!isset($s->$nameActual) || (Flags\is_flag_set($flags, self::FLAG_IGNORE_NOISY_PROPERTIES) && in_array($nameActual, self::$noisyProperties))) {
                         continue;
                     } elseif ($s->$nameActual != $section->$nameActual->value) {
                         $valueOriginal = $s->$nameActual;
                         $valueNew = $section->$nameActual->value;
 
-                        if (AbstractTableModel::isFlagSet($properties['flags'], AbstractTableModel::FLAG_BOOL)) {
+                        if (Flags\is_flag_set($properties['flags'], AbstractTableModel::FLAG_BOOL)) {
                             $valueOriginal = true == $valueOriginal ? 'true' : 'false';
                             $valueNew = true == $valueNew ? 'true' : 'false';
                         }
@@ -86,9 +96,9 @@ class Diff
 
                         foreach ($field::getFieldMappings() as $name => $properties) {
                             $nameActual = $properties['name'];
-
                             $comparisonValueActual = null;
-                            if ((!isset($f->$nameActual) && !isset($f->custom->$nameActual)) || in_array($nameActual, ['sortOrder', 'location', 'showColumn'])) {
+
+                            if ((!isset($f->$nameActual) && !isset($f->custom->$nameActual)) || (Flags\is_flag_set($flags, self::FLAG_IGNORE_NOISY_PROPERTIES) && in_array($nameActual, self::$noisyProperties))) {
                                 continue;
                             } elseif (isset($f->$nameActual)) {
                                 $comparisonValueActual = $f->$nameActual;
@@ -104,7 +114,7 @@ class Diff
                                 $valueOriginal = $comparisonValueActual;
                                 $valueNew = $field->$nameActual->value;
 
-                                if (AbstractTableModel::isFlagSet($properties['flags'], AbstractTableModel::FLAG_BOOL)) {
+                                if (Flags\is_flag_set($properties['flags'], AbstractTableModel::FLAG_BOOL)) {
                                     $valueOriginal = true == $valueOriginal ? 'true' : 'false';
                                     $valueNew = true == $valueNew ? 'true' : 'false';
                                 }

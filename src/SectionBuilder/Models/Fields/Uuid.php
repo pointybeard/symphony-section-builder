@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace pointybeard\Symphony\SectionBuilder\SectionBuilder\Models\Fields;
+namespace pointybeard\Symphony\SectionBuilder\Models\Fields;
 
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\AbstractField;
-use pointybeard\Symphony\SectionBuilder\SectionBuilder\Interfaces\FieldInterface;
+use pointybeard\Symphony\SectionBuilder\AbstractField;
+use pointybeard\Symphony\SectionBuilder\Interfaces\FieldInterface;
 
 class Uuid extends AbstractField implements FieldInterface
 {
