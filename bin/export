@@ -17,7 +17,7 @@ $manpage = [
     basename(__FILE__),
     '1.0.0',
     'generate JSON string representation of all sections and fields',
-    'export -m /path/to/manifest',
+    'export --manifest=/path/to/manifest',
 ];
 
 $collection = (new Cli\Input\InputCollection())
@@ -27,6 +27,7 @@ $collection = (new Cli\Input\InputCollection())
             ->short('o')
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('Save JSON export to this location')
+            ->default(null)
     )
 ;
 
@@ -35,7 +36,7 @@ include DOCROOT . '/src/Includes/common.php';
 try {
     \SymphonyPDO\Loader::instance((object)$databaseCredentials);
     $output = ["sections" => []];
-    foreach(Lib\Models\Section::all() as $section) {
+    foreach(SectionBuilder\Models\Section::all() as $section) {
         $output["sections"][] = json_decode((string)$section, false);
     }
 
@@ -44,14 +45,22 @@ try {
         $output["sections"]
     );
 
-    echo json_encode(
+    $json = json_encode(
         $output,
         JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-    ).PHP_EOL;
+    );
+
+    if(null === $argv->find("output")) {
+        echo $json.PHP_EOL;
+    } else {
+        $file = $argv->find("output");
+        file_put_contents($file, $json);
+        echo Colour::colourise(filesize($file)." bytes written to ".$file,Colour::FG_GREEN).PHP_EOL;
+    }
 
 } catch(Exception $ex) {
     Functions\Cli\display_error_and_exit(sprintf(
-        "Unable export data. Returned: %s",
+        'Unable export data. Returned: %s',
         $ex->getMessage()
     ), 'FATAL ERROR');
 }
