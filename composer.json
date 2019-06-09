@@ -21,15 +21,8 @@
         "php": ">=7.3",
         "pointybeard/symphony-pdo": "~0.1.0",
         "pointybeard/helpers": "~1.2.0",
-        "pointybeard/symphonycms-console": "dev-integration",
         "pointybeard/property-bag": "^1.0"
     },
-    "repositories": [
-        {
-            "url": "https://github.com/pointybeard/console.git",
-            "type": "git"
-        }
-    ],
     "require-dev": {
         "symphonycms/symphony-2": "~2.7.0"
     },
