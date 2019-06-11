@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.2.0][] - 2019-04-08
+## [0.2.0][] - 2019-06-08
 #### Added
 -   Added `--output` option to `bin/export`
 
