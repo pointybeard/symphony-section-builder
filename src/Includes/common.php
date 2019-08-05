@@ -7,6 +7,7 @@ namespace pointybeard\Symphony\SectionBuilder\Common;
 use pointybeard\Helpers\Cli;
 use pointybeard\Helpers\Functions;
 use pointybeard\Helpers\Cli\Colour\Colour;
+use pointybeard\Helpers\Functions\Json;
 use pointybeard\Symphony\SectionBuilder\Exceptions;
 
 $databaseCredentials = [
@@ -22,6 +23,7 @@ $databaseOptionValidator = function (Cli\Input\AbstractInputType $input, Cli\Inp
     if (null !== $context->find('manifest')) {
         throw new Exceptions\SectionBuilderException('Does not make sense to specify both --manifest and --'.$input->name);
     }
+    return $context->find($input->name);
 };
 
 $collection
@@ -29,15 +31,29 @@ $collection
         Cli\Input\InputTypeFactory::build('LongOption')
             ->name('manifest')
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-            ->description('Path to the manifest folder containing a config.php. This is an alternative to providing database credentials and instead they are read from config.php')
+            ->description('Path to the manifest folder containing a config.php or config.json file. This is an alternative to providing database credentials directly, instead reading them from the config.')
+            ->default(null)
             ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) use ($databaseCredentials) {
-                $config = realpath($context->find('manifest')).DIRECTORY_SEPARATOR.'config.php';
 
-                if (false === $config || !is_readable($config)) {
-                    throw new Exceptions\SectionBuilderException('The manifest location specified by --manifest does not exist or does not contain a config.php file.');
+                $config = null;
+                $manifest = null;
+
+                if(false == $manifest = realpath($context->find('manifest'))) {
+                    throw new Exceptions\SectionBuilderException('Path provided by --manifest is invalid.');
                 }
 
-                include $config;
+                if(true == is_readable($manifest . DIRECTORY_SEPARATOR . 'config.php')) {
+                    include $manifest . DIRECTORY_SEPARATOR . 'config.php';
+                } elseif(true == file_exists($manifest . DIRECTORY_SEPARATOR . 'config.json')) {
+                    $config = $manifest . DIRECTORY_SEPARATOR . 'config.json';
+                    try{
+                        $settings = Json\json_decode_file($config, true);
+                    } catch(\JsonException $ex) {
+                        throw new Exceptions\SectionBuilderException("Config file {$config} is not valid json. Returned: " . $ex->getMessage());
+                    }
+                } else {
+                    throw new Exceptions\SectionBuilderException('The path specified by --manifest does not contain a config.php or config.json file.');
+                }
 
                 if (!is_array($settings) || !isset($settings['database'])) {
                     throw new Exceptions\SectionBuilderException('Config file found in location specified by --manifest does not appear to be a valid Symphony CMS config file.');
@@ -121,6 +137,9 @@ $collection
                 if (null !== $context->find('manifest')) {
                     throw new Exceptions\SectionBuilderException('Does not make sense to specify both --manifest and --'.$input->name);
                 }
+                if(false == is_bool($context->find('database-pass'))) {
+                    return $context->find('database-pass');
+                }
 
                 return (new Cli\Prompt\Prompt('Enter Password'))
                     ->flags(Cli\Prompt\Prompt::FLAG_SILENT)
@@ -193,12 +212,12 @@ try {
     if (null === $argv->find('manifest') && (null === $argv->find('database-name') || null === $argv->find('database-user'))) {
         Functions\Cli\display_error_and_exit('Insufficent database credentials supplied. You must specify either --manifest or both --database-name & --database-user at a minimum', 'Invalid Options');
     }
-} catch (Cli\Input\Exceptions\RequiredInputMissingException | Cli\Input\Exceptions\RequiredInputMissingValueException $ex) {
+} catch (Cli\Input\Exceptions\RequiredInputMissingException | Cli\Input\Exceptions\UnrecognisedInputException |  Cli\Input\Exceptions\RequiredInputMissingValueException $ex) {
     echo Colour::colourise($manpage[0].": {$ex->getMessage()}", Colour::FG_RED).PHP_EOL.Functions\Cli\usage($manpage[0], $collection).PHP_EOL.PHP_EOL.'Try `-h` for more options.'.PHP_EOL;
     exit(1);
 } catch (Cli\Input\Exceptions\InputValidationFailedException $ex) {
     Functions\Cli\display_error_and_exit($ex->getMessage(), 'Invalid Options');
-} catch (Exception $ex) {
+} catch (\Exception $ex) {
     Functions\Cli\display_error_and_exit('An error occurred while attempting to bind input values. Returned: '.$ex->getMessage(), 'FATAL ERROR');
 }
 
