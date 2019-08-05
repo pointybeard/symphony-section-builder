@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.1][] - 2019-08-06
+#### Added
+-   Added support for config.json.
+
+#### Changed
+-   Improved error handling in `Includes\common.php`
+
+#### Fixed
+-   No longer asking for password when one is provded.
+
 ## [0.2.0][] - 2019-06-08
 #### Added
 -   Added `--output` option to `bin/export`
