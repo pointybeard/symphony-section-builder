@@ -31,9 +31,10 @@ abstract class AbstractField extends AbstractTableModel
     {
         $tablePrefix = SymphonyPDO\Loader::getCredentials()->tbl_prefix;
         $sql = static::getEntriesDataCreateTableSyntax();
-        if ($tablePrefix !== 'tbl_') {
+        if ('tbl_' !== $tablePrefix) {
             $sql = preg_replace('/tbl_(\S+?)([\s\.,]|$)/', $tablePrefix.'\\1\\2', $sql);
         }
+
         return false !== SymphonyPDO\Loader::instance()->exec($sql);
     }
 

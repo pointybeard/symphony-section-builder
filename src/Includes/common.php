@@ -23,6 +23,7 @@ $databaseOptionValidator = function (Cli\Input\AbstractInputType $input, Cli\Inp
     if (null !== $context->find('manifest')) {
         throw new Exceptions\SectionBuilderException('Does not make sense to specify both --manifest and --'.$input->name);
     }
+
     return $context->find($input->name);
 };
 
@@ -34,22 +35,21 @@ $collection
             ->description('Path to the manifest folder containing a config.php or config.json file. This is an alternative to providing database credentials directly, instead reading them from the config.')
             ->default(null)
             ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) use ($databaseCredentials) {
-
                 $config = null;
                 $manifest = null;
 
-                if(false == $manifest = realpath($context->find('manifest'))) {
+                if (false == $manifest = realpath($context->find('manifest'))) {
                     throw new Exceptions\SectionBuilderException('Path provided by --manifest is invalid.');
                 }
 
-                if(true == is_readable($manifest . DIRECTORY_SEPARATOR . 'config.php')) {
-                    include $manifest . DIRECTORY_SEPARATOR . 'config.php';
-                } elseif(true == file_exists($manifest . DIRECTORY_SEPARATOR . 'config.json')) {
-                    $config = $manifest . DIRECTORY_SEPARATOR . 'config.json';
-                    try{
+                if (true == is_readable($manifest.DIRECTORY_SEPARATOR.'config.php')) {
+                    include $manifest.DIRECTORY_SEPARATOR.'config.php';
+                } elseif (true == file_exists($manifest.DIRECTORY_SEPARATOR.'config.json')) {
+                    $config = $manifest.DIRECTORY_SEPARATOR.'config.json';
+                    try {
                         $settings = Json\json_decode_file($config, true);
-                    } catch(\JsonException $ex) {
-                        throw new Exceptions\SectionBuilderException("Config file {$config} is not valid json. Returned: " . $ex->getMessage());
+                    } catch (\JsonException $ex) {
+                        throw new Exceptions\SectionBuilderException("Config file {$config} is not valid json. Returned: ".$ex->getMessage());
                     }
                 } else {
                     throw new Exceptions\SectionBuilderException('The path specified by --manifest does not contain a config.php or config.json file.');
@@ -137,7 +137,7 @@ $collection
                 if (null !== $context->find('manifest')) {
                     throw new Exceptions\SectionBuilderException('Does not make sense to specify both --manifest and --'.$input->name);
                 }
-                if(false == is_bool($context->find('database-pass'))) {
+                if (false == is_bool($context->find('database-pass'))) {
                     return $context->find('database-pass');
                 }
 
@@ -212,7 +212,7 @@ try {
     if (null === $argv->find('manifest') && (null === $argv->find('database-name') || null === $argv->find('database-user'))) {
         Functions\Cli\display_error_and_exit('Insufficent database credentials supplied. You must specify either --manifest or both --database-name & --database-user at a minimum', 'Invalid Options');
     }
-} catch (Cli\Input\Exceptions\RequiredInputMissingException | Cli\Input\Exceptions\UnrecognisedInputException |  Cli\Input\Exceptions\RequiredInputMissingValueException $ex) {
+} catch (Cli\Input\Exceptions\RequiredInputMissingException | Cli\Input\Exceptions\UnrecognisedInputException | Cli\Input\Exceptions\RequiredInputMissingValueException $ex) {
     echo Colour::colourise($manpage[0].": {$ex->getMessage()}", Colour::FG_RED).PHP_EOL.Functions\Cli\usage($manpage[0], $collection).PHP_EOL.PHP_EOL.'Try `-h` for more options.'.PHP_EOL;
     exit(1);
 } catch (Cli\Input\Exceptions\InputValidationFailedException $ex) {
