@@ -72,7 +72,7 @@ abstract class AbstractTableModel extends PropertyBag
             $value = null;
         } else {
             if (Flags\is_flag_set($flags, self::FLAG_BOOL)) {
-                $value = ('yes' == strtolower($value) || true === $value);
+                $value = ('yes' == strtolower((string)$value) || true === $value);
             } elseif (Flags\is_flag_set($flags, self::FLAG_INT)) {
                 $value = (int) $value;
             } elseif (Flags\is_flag_set($flags, self::FLAG_STR)) {
