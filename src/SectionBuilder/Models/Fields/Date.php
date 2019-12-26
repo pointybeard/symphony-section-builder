@@ -17,7 +17,7 @@ class Date extends AbstractField implements FieldInterface
         return (object) array_merge((array) parent::getFieldMappings(), [
             'pre_populate' => [
                 'name' => 'prePopulate',
-                'flags' => self::FLAG_STR,
+                'flags' => self::FLAG_BOOL,
             ],
 
             'calendar' => [
@@ -58,7 +58,7 @@ class Date extends AbstractField implements FieldInterface
     {
         return [
             'field_id' => (int) $this->id->value,
-            'pre_populate' => (string) $this->prePopulate,
+            'pre_populate' => self::boolToEnumYesNo($this->prePopulate->value),
             'calendar' => self::boolToEnumYesNo($this->calendar->value),
             'time' => self::boolToEnumYesNo($this->time->value),
         ];
