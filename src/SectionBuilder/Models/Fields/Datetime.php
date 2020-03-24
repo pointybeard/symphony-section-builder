@@ -10,7 +10,7 @@ use pointybeard\Symphony\SectionBuilder\Interfaces\FieldInterface;
 class Datetime extends AbstractField implements FieldInterface
 {
     const TYPE = 'datetime';
-    const TABLE = 'sym_fields_datetime';
+    const TABLE = 'tbl_fields_datetime';
 
     public static function getFieldMappings(): \stdClass
     {

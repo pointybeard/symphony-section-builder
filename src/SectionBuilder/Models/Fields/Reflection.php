@@ -10,7 +10,7 @@ use pointybeard\Symphony\SectionBuilder\Interfaces\FieldInterface;
 class Reflection extends AbstractField implements FieldInterface
 {
     const TYPE = 'reflection';
-    const TABLE = 'sym_fields_reflection';
+    const TABLE = 'tbl_fields_reflection';
 
     public static function getFieldMappings(): \stdClass
     {

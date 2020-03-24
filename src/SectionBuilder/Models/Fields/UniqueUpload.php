@@ -10,7 +10,7 @@ use pointybeard\Symphony\SectionBuilder\Interfaces\FieldInterface;
 class UniqueUpload extends AbstractField implements FieldInterface
 {
     const TYPE = 'uniqueupload';
-    const TABLE = 'sym_fields_uniqueupload';
+    const TABLE = 'tbl_fields_uniqueupload';
 
     public static function getFieldMappings(): \stdClass
     {

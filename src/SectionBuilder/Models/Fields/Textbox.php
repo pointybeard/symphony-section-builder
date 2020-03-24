@@ -10,7 +10,7 @@ use pointybeard\Symphony\SectionBuilder\Interfaces\FieldInterface;
 class Textbox extends AbstractField implements FieldInterface
 {
     const TYPE = 'textbox';
-    const TABLE = 'sym_fields_textbox';
+    const TABLE = 'tbl_fields_textbox';
 
     public static function getFieldMappings(): \stdClass
     {
@@ -60,7 +60,7 @@ class Textbox extends AbstractField implements FieldInterface
     public function getEntriesDataCreateTableSyntax(): string
     {
         return sprintf(
-            'CREATE TABLE `sym_entries_data_%d` (
+            'CREATE TABLE `tbl_entries_data_%d` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `entry_id` int(11) unsigned NOT NULL,
               `handle` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,

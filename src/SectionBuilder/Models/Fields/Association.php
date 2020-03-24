@@ -11,7 +11,7 @@ use pointybeard\Symphony\SectionBuilder\Traits;
 class Association extends AbstractField implements Interfaces\FieldInterface, Interfaces\FieldAssociationInterface
 {
     const TYPE = 'association';
-    const TABLE = 'sym_fields_association';
+    const TABLE = 'tbl_fields_association';
 
     use Traits\hasFetchAssociatedFieldTrait;
 

@@ -10,7 +10,7 @@ use pointybeard\Symphony\SectionBuilder\Interfaces\FieldInterface;
 class OrderEntries extends AbstractField implements FieldInterface
 {
     const TYPE = 'order_entries';
-    const TABLE = 'sym_fields_order_entries';
+    const TABLE = 'tbl_fields_order_entries';
 
     public static function getFieldMappings(): \stdClass
     {
