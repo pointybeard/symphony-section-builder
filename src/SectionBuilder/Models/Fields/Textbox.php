@@ -60,16 +60,18 @@ class Textbox extends AbstractField implements FieldInterface
     public function getEntriesDataCreateTableSyntax(): string
     {
         return sprintf(
-            'CREATE TABLE `tbl_entries_data_%d` (
-                `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-                `entry_id` int(11) unsigned NOT NULL,
-                `handle` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                `value` text COLLATE utf8_unicode_ci,
-                `value_formatted` text COLLATE utf8_unicode_ci,
-                PRIMARY KEY (`id`),
-                KEY `entry_id` (`entry_id`),
-                FULLTEXT KEY `value` (`value`),
-                FULLTEXT KEY `value_formatted` (`value_formatted`)
+            'CREATE TABLE `sym_entries_data_%d` (
+              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `entry_id` int(11) unsigned NOT NULL,
+              `handle` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
+              `value` text COLLATE utf8_unicode_ci,
+              `value_formatted` text COLLATE utf8_unicode_ci,
+              `word_count` int(11) unsigned DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `entry_id` (`entry_id`),
+              KEY `handle` (`handle`(333)),
+              FULLTEXT KEY `value` (`value`),
+              FULLTEXT KEY `value_formatted` (`value_formatted`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;',
             (int) $this->id->value
         );
