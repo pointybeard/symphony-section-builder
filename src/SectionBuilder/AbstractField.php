@@ -27,12 +27,34 @@ abstract class AbstractField extends AbstractTableModel
         return $this instanceof Interfaces\FieldAssociationInterface;
     }
 
-    public function installEntriesDataTable(): bool
-    {
+    protected static function replaceTablePrefix(string $sql) {
         $tablePrefix = SymphonyPDO\Loader::getCredentials()->tbl_prefix;
-        $sql = static::getEntriesDataCreateTableSyntax();
         if ('tbl_' !== $tablePrefix) {
             $sql = preg_replace('/tbl_(\S+?)([\s\.,]|$)/', $tablePrefix.'\\1\\2', $sql);
+        }
+        return $sql;
+    }
+
+    public function hasEntriesDataTable(): bool
+    {
+        $sql = sprintf("SHOW TABLES LIKE 'tbl_entries_data_%d'", (int) $this->id->value);
+        $result = SymphonyPDO\Loader::instance()->query(static::replaceTablePrefix($sql));
+        return $result->fetchObject() !== false;
+    }
+
+    public function installEntriesDataTable(bool $dropExisting = false): bool
+    {
+        // Check to see if the table already exists
+        if(true == $this->hasEntriesDataTable() && false == $dropExisting) {
+            return true;
+        }
+
+        $sql = static::replaceTablePrefix(static::getEntriesDataCreateTableSyntax());
+
+        if(true == $dropExisting) {
+            SymphonyPDO\Loader::instance()->exec(static::replaceTablePrefix(
+                sprintf("DROP TABLE IF EXISTS `tbl_entries_data_%d`;", (int) $this->id->value)
+            ));
         }
 
         return false !== SymphonyPDO\Loader::instance()->exec($sql);
