@@ -1,10 +1,15 @@
 {
     "name": "pointybeard/symphony-section-builder",
-    "description": "Symphony CMS: Section Builder",
+    "description": "A set of classes and scripts for automating the creation and updating of sections and their fields.",
     "homepage": "https://github.com/pointybeard/symphony-section-builder",
     "type": "library",
     "license": "MIT",
     "minimum-stability": "stable",
+    "keywords": [
+        "php",
+        "symphony",
+        "symphonycms"
+    ],
     "authors": [
         {
             "name": "Alannah Kearney",
@@ -14,9 +19,14 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/pointybeard/symphony-section-builder/issues",
-        "wiki": "https://github.com/pointybeard/symphony-section-builder/wiki"
+        "issues": "https://github.com/pointybeard/symphony-section-builder/issues"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pointybeard/symphonycms.git"
+        }
+    ],
     "require": {
         "php": ">=7.3",
         "pointybeard/symphony-pdo": "~0.1.0",
@@ -24,11 +34,26 @@
         "pointybeard/property-bag": "^1.0"
     },
     "require-dev": {
-        "symphonycms/symphony-2": "~2.7.0"
+        "symphonycms/symphonycms": "dev-essentials",
+        "squizlabs/php_codesniffer": "~3.0",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "damianopetrungaro/php-commitizen": "^0.1.2",
+        "php-parallel-lint/php-parallel-lint": "^1.2"
     },
     "autoload": {
         "psr-4": {
             "pointybeard\\Symphony\\": "src/"
         }
+    },
+    "scripts": {
+        "tidy": "php-cs-fixer fix --config=.php_cs.dist -v --using-cache=no",
+        "tidyDry": "@tidy --dry-run",
+        "test": [
+            "parallel-lint . --exclude vendor"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "process-timeout": 0
     }
 }
