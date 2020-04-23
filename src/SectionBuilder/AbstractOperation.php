@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder;
 
 abstract class AbstractOperation implements Interfaces\OperationInterface
@@ -82,6 +91,7 @@ abstract class AbstractOperation implements Interfaces\OperationInterface
             foreach ($sections as $s) {
                 if ($s->handle == $handle) {
                     $sectionsOrdered[] = $s;
+
                     continue 2;
                 }
             }

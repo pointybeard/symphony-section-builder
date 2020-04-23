@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder\Models\Fields;
 
 use pointybeard\Symphony\SectionBuilder\AbstractField;
@@ -86,11 +95,11 @@ class Textbox extends AbstractField implements FieldInterface
     {
         return [
             'field_id' => (int) $this->id->value,
-            'column_length' => $this->columnLength->value == NULL ? NULL : (int) $this->columnLength->value,
+            'column_length' => null == $this->columnLength->value ? null : (int) $this->columnLength->value,
             'text_size' => $this->textSize->value,
             'text_formatter' => $this->textFormatter->value,
             'text_validator' => $this->textValidator->value,
-            'text_length' => $this->textLength->value == NULL ? NULL : (int) $this->textLength->value,
+            'text_length' => null == $this->textLength->value ? null : (int) $this->textLength->value,
             'text_cdata' => self::boolToEnumYesNo($this->textCDATA->value),
             'text_handle' => self::boolToEnumYesNo($this->textHandle->value),
             'handle_unique' => self::boolToEnumYesNo($this->handleUnique->value),

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder;
 
 use pointybeard\Helpers\Functions\Flags;
@@ -13,10 +22,7 @@ class Import extends AbstractOperation
     public static function fromJsonFile(string $file, int $flags = null): array
     {
         if (!is_readable($file)) {
-            throw new Exceptions\SectionBuilderException(sprintf(
-                "The file '%s' is not readable.",
-                $file
-            ));
+            throw new Exceptions\SectionBuilderException(sprintf("The file '%s' is not readable.", $file));
         }
 
         return self::fromJsonString(file_get_contents($file), $flags);
@@ -26,9 +32,7 @@ class Import extends AbstractOperation
     {
         $json = json_decode($string);
         if (false == $json || null === $json) {
-            throw new Exceptions\SectionBuilderException(
-                'String is not a valid JSON document.'
-            );
+            throw new Exceptions\SectionBuilderException('String is not a valid JSON document.');
         }
 
         // @todo: Validate json against schema

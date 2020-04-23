@@ -2,11 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder;
 
+use pointybeard\Helpers\Functions\Flags;
 use SymphonyPDO;
 use SymphonyPDO\Lib\ResultIterator;
-use pointybeard\Helpers\Functions\Flags;
 
 abstract class AbstractField extends AbstractTableModel
 {
@@ -27,11 +36,13 @@ abstract class AbstractField extends AbstractTableModel
         return $this instanceof Interfaces\FieldAssociationInterface;
     }
 
-    protected static function replaceTablePrefix(string $sql) {
+    protected static function replaceTablePrefix(string $sql)
+    {
         $tablePrefix = SymphonyPDO\Loader::getCredentials()->tbl_prefix;
         if ('tbl_' !== $tablePrefix) {
             $sql = preg_replace('/tbl_(\S+?)([\s\.,]|$)/', $tablePrefix.'\\1\\2', $sql);
         }
+
         return $sql;
     }
 
@@ -39,21 +50,22 @@ abstract class AbstractField extends AbstractTableModel
     {
         $sql = sprintf("SHOW TABLES LIKE 'tbl_entries_data_%d'", (int) $this->id->value);
         $result = SymphonyPDO\Loader::instance()->query(static::replaceTablePrefix($sql));
-        return $result->fetchObject() !== false;
+
+        return false !== $result->fetchObject();
     }
 
     public function installEntriesDataTable(bool $dropExisting = false): bool
     {
         // Check to see if the table already exists
-        if(true == $this->hasEntriesDataTable() && false == $dropExisting) {
+        if (true == $this->hasEntriesDataTable() && false == $dropExisting) {
             return true;
         }
 
         $sql = static::replaceTablePrefix(static::getEntriesDataCreateTableSyntax());
 
-        if(true == $dropExisting) {
+        if (true == $dropExisting) {
             SymphonyPDO\Loader::instance()->exec(static::replaceTablePrefix(
-                sprintf("DROP TABLE IF EXISTS `tbl_entries_data_%d`;", (int) $this->id->value)
+                sprintf('DROP TABLE IF EXISTS `tbl_entries_data_%d`;', (int) $this->id->value)
             ));
         }
 
@@ -218,9 +230,7 @@ abstract class AbstractField extends AbstractTableModel
         ))->current();
 
         if (!($field instanceof self)) {
-            throw new Exceptions\CorruptFieldException(
-                "Unable to load field with ID {$id}. Something appears to be wrong with the attributes table record for this field. Does it exist?"
-            );
+            throw new Exceptions\CorruptFieldException("Unable to load field with ID {$id}. Something appears to be wrong with the attributes table record for this field. Does it exist?");
         }
 
         return $field;

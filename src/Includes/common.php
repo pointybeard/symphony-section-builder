@@ -2,11 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder\Common;
 
 use pointybeard\Helpers\Cli;
-use pointybeard\Helpers\Functions;
 use pointybeard\Helpers\Cli\Colour\Colour;
+use pointybeard\Helpers\Functions;
 use pointybeard\Helpers\Functions\Json;
 use pointybeard\Symphony\SectionBuilder\Exceptions;
 
@@ -46,6 +55,7 @@ $collection
                     include $manifest.DIRECTORY_SEPARATOR.'config.php';
                 } elseif (true == file_exists($manifest.DIRECTORY_SEPARATOR.'config.json')) {
                     $config = $manifest.DIRECTORY_SEPARATOR.'config.json';
+
                     try {
                         $settings = Json\json_decode_file($config, true);
                     } catch (\JsonException $ex) {

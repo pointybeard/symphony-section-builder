@@ -2,12 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder\Models\Fields;
 
 use pointybeard\Symphony\SectionBuilder\AbstractField;
 use pointybeard\Symphony\SectionBuilder\Interfaces\FieldInterface;
 
-class OrderId extends AbstractField implements FieldInterface
+class Orderid extends AbstractField implements FieldInterface
 {
     const TYPE = 'orderid';
     const TABLE = 'tbl_fields_orderid';

@@ -2,12 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder;
 
-use SymphonyPDO;
-use SymphonyPDO\Lib\ResultIterator;
 use pointybeard\Helpers\Functions\Flags;
 use pointybeard\PropertyBag\Lib\PropertyBag;
+use SymphonyPDO;
+use SymphonyPDO\Lib\ResultIterator;
 
 abstract class AbstractTableModel extends PropertyBag
 {
@@ -72,7 +81,7 @@ abstract class AbstractTableModel extends PropertyBag
             $value = null;
         } else {
             if (Flags\is_flag_set($flags, self::FLAG_BOOL)) {
-                $value = ('yes' == strtolower((string)$value) || true === $value);
+                $value = ('yes' == strtolower((string) $value) || true === $value);
             } elseif (Flags\is_flag_set($flags, self::FLAG_INT)) {
                 $value = (int) $value;
             } elseif (Flags\is_flag_set($flags, self::FLAG_STR)) {

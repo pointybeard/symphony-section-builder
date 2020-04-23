@@ -2,14 +2,23 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Symphony CMS: Section Builder" repository.
+ *
+ * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Symphony\SectionBuilder\Models;
 
-use pointybeard\Symphony\SectionBuilder\AbstractField;
 use pointybeard\PropertyBag\Lib;
-use SymphonyPDO;
-use SymphonyPDO\Lib\ResultIterator;
+use pointybeard\Symphony\SectionBuilder\AbstractField;
 use pointybeard\Symphony\SectionBuilder\AbstractTableModel;
 use pointybeard\Symphony\SectionBuilder\Exceptions;
+use SymphonyPDO;
+use SymphonyPDO\Lib\ResultIterator;
 
 class Section extends AbstractTableModel
 {
@@ -304,6 +313,7 @@ class Section extends AbstractTableModel
                 return $this->fields[$ii];
             }
         }
+
         throw new Exceptions\NoSuchFieldException("Unable to locate field with element name '{$elementName}' in section.");
     }
 
@@ -316,6 +326,7 @@ class Section extends AbstractTableModel
                 return $this->fields[$ii];
             }
         }
+
         throw new Exceptions\NoSuchFieldException("Unable to locate field with id '{$id}' in section.");
     }
 
