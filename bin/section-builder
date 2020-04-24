@@ -1,25 +1,32 @@
+#!/usr/bin/env php
 <?php
 
 declare(strict_types=1);
 
-/*
- * This file is part of the "Symphony CMS: Section Builder" repository.
- *
- * Copyright 2018-2020 Alannah Kearney <hi@alannahkearney.com>
- *
- * For the full copyright and license information, please view the LICENCE
- * file that was distributed with this source code.
- */
+include __DIR__.'/../vendor/autoload.php';
 
-namespace pointybeard\Symphony\SectionBuilder\Common;
-
-use pointybeard\Helpers\Cli;
-use pointybeard\Helpers\Cli\Colour\Colour;
-use pointybeard\Helpers\Functions;
-use pointybeard\Helpers\Functions\Json;
+use pointybeard\Symphony\SectionBuilder;
 use pointybeard\Symphony\SectionBuilder\Exceptions;
 
-$databaseCredentials = [
+use pointybeard\Helpers\Cli;
+use pointybeard\Helpers\Functions;
+use pointybeard\Helpers\Functions\Json;
+use pointybeard\Helpers\Cli\Colour\Colour;
+use pointybeard\Helpers\Foundation\Factory;
+
+/*
+Set up a few basics
+*/
+$manpageBase = [
+    basename(__FILE__),
+    '1.0.0',
+    'utility for automating the creation and updating of Symphony CMS sections and their fields',
+    'bin/section-builder export -o /path/to/outputfile.json --manifest=/path/to/manifest' . PHP_EOL . 
+    'bin/section-builder import -j /path/to/file.json --manifest=/path/to/manifest' . PHP_EOL . 
+    'bin/section-builder diff -j /path/to/file.json --manifest=/path/to/manifest'
+];
+
+$databaseCredentialsBase = [
     'host' => '127.0.0.1',
     'port' => '3306',
     'db' => null,
@@ -28,7 +35,7 @@ $databaseCredentials = [
     'tbl_prefix' => 'tbl_',
 ];
 
-$databaseOptionValidator = function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
+$databaseOptionInputValidator = function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
     if (null !== $context->find('manifest')) {
         throw new Exceptions\SectionBuilderException('Does not make sense to specify both --manifest and --'.$input->name);
     }
@@ -36,14 +43,41 @@ $databaseOptionValidator = function (Cli\Input\AbstractInputType $input, Cli\Inp
     return $context->find($input->name);
 };
 
-$collection
+$actionValidator = function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
+    if (false == class_exists(__NAMESPACE__.'\\ActionFactory')) {
+        Factory\create(
+            __NAMESPACE__.'\\ActionFactory',
+            '\\pointybeard\\Symphony\\SectionBuilder\\Actions\\%s',
+            '\\pointybeard\\Symphony\\SectionBuilder\\AbstractAction'
+        );
+    }
+
+    try {
+        return ActionFactory::build(ucfirst($context->find('action')));
+    } catch (Factory\Exceptions\UnableToInstanciateConcreteClassException $ex) {
+        throw new \Exception('Invalid action specified. Returned: '.$ex->getMessage());
+    }
+};
+
+/*
+Check if we're running as root and if so, mention to the user its not a great idea
+*/
+if (true == Functions\Cli\is_su()) {
+    SectionBuilder\Includes\Functions\output('It is not a good idea to run this script as root. Consider using a non-root user.', SectionBuilder\Includes\Functions\OUTPUT_WARNING);
+    SectionBuilder\Includes\Functions\ask_to_proceed();
+}
+
+/*
+Build the input collection
+*/
+$collection = (new Cli\Input\InputCollection())
     ->add(
         Cli\Input\InputTypeFactory::build('LongOption')
             ->name('manifest')
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('Path to the manifest folder containing a config.php or config.json file. This is an alternative to providing database credentials directly, instead reading them from the config.')
             ->default(null)
-            ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) use ($databaseCredentials) {
+            ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) use ($databaseCredentialsBase) {
                 $config = null;
                 $manifest = null;
 
@@ -70,7 +104,7 @@ $collection
                 }
 
                 return array_merge(
-                    $databaseCredentials,
+                    $databaseCredentialsBase,
                     $settings['database']
                 );
             }),
@@ -128,7 +162,7 @@ $collection
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('database to use.')
             ->default(null)
-            ->validator($databaseOptionValidator)
+            ->validator($databaseOptionInputValidator)
     )
     ->add(
         Cli\Input\InputTypeFactory::build('LongOption')
@@ -136,7 +170,7 @@ $collection
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('name of database user')
             ->default(null)
-            ->validator($databaseOptionValidator)
+            ->validator($databaseOptionInputValidator)
     )
     ->add(
         Cli\Input\InputTypeFactory::build('LongOption')
@@ -164,7 +198,7 @@ $collection
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('the prefix for all tables in this project. Default is tbl_')
             ->default('tbl_')
-            ->validator($databaseOptionValidator)
+            ->validator($databaseOptionInputValidator)
     )
     ->add(
         Cli\Input\InputTypeFactory::build('LongOption')
@@ -172,7 +206,7 @@ $collection
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('host IP of database to use for deployment. Default is 127.0.0.1')
             ->default('127.0.0.1')
-            ->validator($databaseOptionValidator)
+            ->validator($databaseOptionInputValidator)
     )
     ->add(
         Cli\Input\InputTypeFactory::build('LongOption')
@@ -180,18 +214,49 @@ $collection
             ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
             ->description('port number of database server. Default is 3306')
             ->default('3306')
-            ->validator($databaseOptionValidator)
+            ->validator($databaseOptionInputValidator)
+    )
+    ->add(
+        Cli\Input\InputTypeFactory::build('Argument')
+            ->name('action')
+            ->flags(Cli\Input\AbstractInputType::FLAG_REQUIRED)
+            ->description("The name of the action to perform. Available actions are: import, export, and diff.")
+            ->validator(new Cli\Input\Validator($actionValidator))
     )
 ;
 
-$argv = Cli\Input\InputHandlerFactory::build(
-    'Argv',
-    (new Cli\Input\InputCollection())
-        ->add($collection->find('h'))
-        ->add($collection->find('L')),
-    Cli\Input\AbstractInputHandler::FLAG_BIND_SKIP_VALIDATION
-);
+try {
+    // Very important to skip both unrecognised input and also vaidation
+    $argv = Cli\Input\InputHandlerFactory::build(
+        'Argv',
+        $collection,
+        Cli\Input\AbstractInputHandler::FLAG_VALIDATION_SKIP_UNRECOGNISED | Cli\Input\AbstractInputHandler::FLAG_BIND_SKIP_VALIDATION
+    );
+} catch (\Exception $ex) {
+    SectionBuilder\Includes\Functions\output('An error occurred while attempting to process arguments and options. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
+}
 
+$manpage = $manpageBase;
+
+/*
+Add action specific inputs. Note, no validation has been carried out at this stage.
+*/
+if(null !== $argv->find('action')) {
+    // Since validation has not been performed yet, lets do it ourself by invoking $actionValidator but ignoring errors
+    // as this is really only for the sake of the help page
+    try {
+        $result = $actionValidator($collection->find('action'), $argv);
+        $collection = $result->addActionInputTypesToCollection($collection);
+    } catch(\Exception $ex) {
+        // Don't worry about it. The input will be validated further down so any
+        // issues with the specified action, e.g. doesnt exist will, be caught
+        // there instead
+    }
+}
+
+/*
+Display the help screen if requested
+*/
 if (true === $argv->find('h')) {
     [$name, $version, $description, $examples] = $manpage;
 
@@ -204,33 +269,43 @@ if (true === $argv->find('h')) {
         Colour::FG_WHITE,
         [
             'Examples' => $examples,
-            'Support' => "If you believe you have found a bug, please report it using the GitHub issue tracker at https://github.com/pointybeard/symphony-section-builder/issues, or better yet, fork the library and submit a pull request.\r\n\r\nCopyright 2018-2019 Alannah Kearney. Use `-L` to see software licence information.\r\n",
+            'Support' => "If you believe you have found a bug, please report it using the GitHub issue tracker at https://github.com/pointybeard/symphony-section-builder/issues, or better yet, fork the library and submit a pull request.\r\n\r\nCopyright 2018-2020 Alannah Kearney. Use `-L` to see software licence information.\r\n",
         ]
     );
     exit;
 }
 
-if ($argv->find('L')) {
+/*
+Display the licence screen if requested
+*/
+if (true === $argv->find('L')) {
     echo file_get_contents(__DIR__.'/../LICENCE').PHP_EOL;
     exit;
 }
 
+/*
+Bind the collection in order to perform input validation
+*/
 try {
-    // Now we do validation with the entire collection
+
+    $argv = Cli\Input\InputHandlerFactory::build('Argv', $collection);
     $argv->bind($collection);
 
     if (null === $argv->find('manifest') && (null === $argv->find('database-name') || null === $argv->find('database-user'))) {
-        Functions\Cli\display_error_and_exit('Insufficent database credentials supplied. You must specify either --manifest or both --database-name & --database-user at a minimum', 'Invalid Options');
+        SectionBuilder\Includes\Functions\output('Insufficent database credentials supplied. You must specify either --manifest or both --database-name & --database-user at a minimum', SectionBuilder\Includes\Functions\OUTPUT_ERROR);
     }
 } catch (Cli\Input\Exceptions\RequiredInputMissingException | Cli\Input\Exceptions\UnrecognisedInputException | Cli\Input\Exceptions\RequiredInputMissingValueException $ex) {
     echo Colour::colourise($manpage[0].": {$ex->getMessage()}", Colour::FG_RED).PHP_EOL.Functions\Cli\usage($manpage[0], $collection).PHP_EOL.PHP_EOL.'Try `-h` for more options.'.PHP_EOL;
     exit(1);
 } catch (Cli\Input\Exceptions\InputValidationFailedException $ex) {
-    Functions\Cli\display_error_and_exit($ex->getMessage(), 'Invalid Options');
+    SectionBuilder\Includes\Functions\output($ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
 } catch (\Exception $ex) {
-    Functions\Cli\display_error_and_exit('An error occurred while attempting to bind input values. Returned: '.$ex->getMessage(), 'FATAL ERROR');
+    SectionBuilder\Includes\Functions\output('An error occurred while attempting to process arguments and options. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
 }
 
+/*
+Build the credentials used for connecting to the database
+*/
 if (null === $argv->find('manifest')) {
     $databaseCredentials = [
         'host' => $argv->find('database-host'),
@@ -244,8 +319,16 @@ if (null === $argv->find('manifest')) {
     $databaseCredentials = $argv->find('manifest');
 }
 
+/*
+Check the database connection
+*/
 try {
     \SymphonyPDO\Loader::instance((object) $databaseCredentials);
 } catch (\Exception $ex) {
-    Functions\Cli\display_error_and_exit('Unable to connect with the database credentials provided. Returned: '.$ex->getMessage(), 'FATAL ERROR');
+    SectionBuilder\Includes\Functions\output('Unable to connect with the database credentials provided. Returned:'.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
 }
+
+/*
+Bootstrap is complete; now run the action
+*/
+exit($action->execute($argv));
