@@ -1,34 +1,70 @@
 # Symphony CMS: Section Builder
 
--   Version: 0.2.1
--   Date: Aug 6 2019
--   [Release notes](https://github.com/pointybeard/symphony-section-builder/blob/master/CHANGELOG.md)
--   [GitHub repository](https://github.com/pointybeard/symphony-section-builder)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pointybeard/symphony-section-builder/badges/quality-score.png?b=master)][ext-scrutinizer]
+[![Code Coverage](https://scrutinizer-ci.com/g/pointybeard/symphony-section-builder/badges/coverage.png?b=master)][ext-scrutinizer]
+[![Build Status](https://scrutinizer-ci.com/g/pointybeard/symphony-section-builder/badges/build.png?b=master)][ext-scrutinizer]
 
-A set of classes that assist with the creating and updating of sections and their fields.
+A set of classes and command line scripts that assist with the creating, exporting, and updating of sections and their fields.
+
+-   [Installation](#installation)
+-   [Basic Usage](#basic-usage)
+-   [About](#about)
+    -   [Requirements](#dependencies)
+    -   [Dependencies](#dependencies)
+-   [Documentation](#documentation)
+-   [Support](#support)
+-   [Contributing](#contributing)
+-   [License](#license)
 
 ## Installation
 
-This libary can be used standalone or as part of a [Symphony CMS](https://getsymphony.com) installation (including Extension).
+This libary can be used standalone or as part of a [Symphony CMS][ext-Symphony] installation (including Extension) via composer.
 
 ### Standalone
 
-Clone desired version from the GitHub repository with `git clone https://github.com/pointybeard/symphony-section-builder.git` then run `composer update` within that folder. Note, this will install dev library `symphonycms/symphony-2` by default. Use `--no-dev` when running `composer update` to skip this.
+Use the following commands to clone this repository and install required packages
 
-### Using Composer
+```bash
+$ git clone https://github.com/pointybeard/symphony-section-builder.git
+$ composer update -vv --profile -d ./symphony-section-builder
+```
 
-To install via [Composer](http://getcomposer.org/), use `composer require pointybeard/symphony-section-builder` or add `"pointybeard/pointybeard/symphony-section-builder": "^0.2.0"` to your `composer.json` file.
+### Via Composer
 
-And run composer to update your dependencies, for example:
+To install via [Composer](http://getcomposer.org/), use 
 
-    $ curl -s http://getcomposer.org/installer | php
-    $ php composer.phar update
+```bash
+$ composer require pointybeard/symphony-section-builder
+```
 
-Note that this method will NOT install any dev libraries, specifically `symphonycms/symphony-2`. Generally this is the desired behaviour, however, should the core Symphony CMS library not get included anywhere via composer (e.g. Section Builder is being used as part of a library that doesn't already include Symphony CMS), be use to use the `--dev` flag (e.g. `composer update --dev`) to ensure `symphonycms/symphony-2` is also installed, or, use the `--symphony=PATH` option to tell Section Builder where to load the Symphony CMS core from.
+Alternatively, add `"pointybeard/pointybeard/symphony-section-builder": "~0.2.0"` to your `composer.json` file's `require` or `require-dev` block and update your project to install the new dependencies with
 
-## Usage
+```bash
+$ composer update -vv --profile
+```
 
-Quick example of how to use this library:
+Note that this method will NOT install any dev libraries, specifically `symphonycms/symphonycms`. Generally this is the desired behaviour, however, should the core Symphony CMS library not get included anywhere via composer (e.g. Section Builder is being used as part of a library that doesn't already include Symphony CMS), be sure to use the `--dev` flag (e.g. `composer update --dev`) so `symphonycms/symphonycms` is installed. Alternatively, use the `--symphony=PATH` option on the command line to tell Section Builder where to load the Symphony CMS core from. E.g.
+
+```bash
+$ vendor/bin/section-builder export --symphony=/var/www/mywebsite --manifest=/path/to/manifest
+```
+
+## Basic Usage
+
+Invoke Section Builder from the command line with the following
+
+```bash
+## Import
+$ bin/section-builder import -j /path/to/sections.json --manifest=/path/to/manifest
+
+## Export
+$ bin/section-builder export -o /path/to/outputfile.json --manifest=/path/to/manifest
+
+## Diff
+$ bin/section-builder diff -j /path/to/sections.json --manifest=/path/to/manifest
+```
+
+Section Builder can also be invoked within code. Here is a quick example:
 
 ```php
 <?php
@@ -120,122 +156,60 @@ try {
 }
 ```
 
-### Importing JSON
+## About
 
-Run `bin/import` from the command line or use code like this:
+### Requirements
 
-```php
-<?php
-use pointybeard\Symphony\SectionBuilder;
-SectionBuilder\Import::fromJsonFile('/path/to/some/file.json');
-```
+- This extension works with PHP 7.3 or above.
 
-Use flag `FLAG_SKIP_ORDERING` if importing partial section JSON. This helps
-to avoid a circular dependency exception being thrown. Flags are supported by `fromJsonFile()`, `fromJsonString()`, and `fromObject()`. For example:
+### Dependencies
 
-```php
-<?php
-SectionBuilder\Import::fromJsonFile('/path/to/some/file.json', SectionBuilder\Import::FLAG_SKIP_ORDERING);
-```
+Section Builder depends on the following Composer libraries:
 
-JSON must be an array of sections and look like this:
+-   [pointybeard/symphony-pdo][dep-symphony-pdo]
+-   [pointybeard/helpers][dep-helpers]
+-   [pointybeard/property-bag][dep-property-bag]
 
-```json
-{
-    "sections": [
-        {
-            "name": "Providers",
-            "handle": "providers",
-            "sortOrder": 39,
-            "hideFromBackendNavigation": false,
-            "allowFiltering": false,
-            "navigationGroup": "Shipping",
-            "associations": [],
-            "fields": [
-                {
-                    "label": "Name",
-                    "elementName": "name",
-                    "type": "input",
-                    "required": true,
-                    "sortOrder": 0,
-                    "location": "sidebar",
-                    "showColumn": true,
-                    "custom": {
-                        "validator": null
-                    }
-                },
-                {
-                    "label": "UUID",
-                    "elementName": "uuid",
-                    "type": "uuid",
-                    "required": true,
-                    "sortOrder": 1,
-                    "location": "sidebar",
-                    "showColumn": true,
-                    "custom": []
-                }
-            ]
-        }
-    ]
-}
+As well as the following dev libraries
 
-```
+-   The Symphony CMS (Extended) fork of [symphonycms/symphonycms][dep-symphonycms]
+-   [squizlabs/php_codesniffer][dep-php_codesniffer]
+-   [friendsofphp/php-cs-fixer][dep-friendsofphp/php-cs-fixer]
+-   [damianopetrungaro/php-commitizen][dep-php-commitizen]
+-   [php-parallel-lint/php-parallel-lint][dep-php-parallel-lint]
 
-### Exporting
+## Documentation
 
-Run `bin/export` from the command line or use the `__toString()`, `__toJson()`, and/or `__toArray()` methods provided by `AbstractField` and `Section`. For example:
-
-```php
-<?php
-use pointybeard\Symphony\SectionBuilder\Models;
-$section = Models\Section::loadFromHandle('categories');
-
-print (string)$section;
-print $section->__toJson();
-print_r($section->__toArray());
-
-```
-
-If a full export is necessary, use the `all()` method and build the array before encoding it to JSON. e.g.
-
-```php
-<?php
-$output = ["sections" => []];
-foreach(Models\Section::all() as $section) {
-    // We use json_decode() to ensure ids (id and sectionId) are removed
-    // from the output. To keep ids, use __toArray()
-    $output["sections"][] = json_decode((string)$section, true);
-}
-
-print json_encode($output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-```
-
-Note that IDs (specifically Section and Field `id` and Field `sectionId` properties) are automatically stripped out by `__toString()` and `__toJson()`. To keep them, either use `__toArray()` and encode to JSON yourself, or using `__toJson()` but set `$excludeIds` to false. e.g. `$section->__toJson(false)`. See this implementation in the Trait `hasToStringToJsonTrait`.
-
-### Diff
-
-You can compare a database with a JSON export via `bin/diff` from the command line or use code like this:
-
-```php
-<?php
-use pointybeard\Symphony\SectionBuilder;
-
-foreach(SectionBuilder\Diff::fromJsonFile('/path/to/some/file.json')){
-    // Print changes found here ...
-}
-
-```
+Read the [full documentation here][ext-docs].
 
 ## Support
 
-If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/pointybeard/symphony-section-builder/issues),
+If you believe you have found a bug, please report it using the [GitHub issue tracker][ext-issues],
 or better yet, fork the library and submit a pull request.
 
 ## Contributing
 
-We encourage you to contribute to this project. Please check out the [Contributing documentation](https://github.com/pointybeard/symphony-section-builder/blob/master/CONTRIBUTING.md) for guidelines about how to get involved.
+We encourage you to contribute to this project. Please check out the [Contributing to this project][doc-CONTRIBUTING] documentation for guidelines about how to get involved.
+
+## Author
+-   Alannah Kearney - hi@alannahkearney.com - http://twitter.com/pointybeard
+-   See also the list of [contributors][ext-contributor] who participated in this project
 
 ## License
+"Symphony CMS: Section Builder" is released under the MIT License. See [LICENCE][doc-LICENCE] for details.
 
-"Symphony CMS: Section Builder" is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+[doc-CONTRIBUTING]: https://github.com/pointybeard/symphony-section-builder/blob/master/CONTRIBUTING.md
+[doc-LICENCE]: http://www.opensource.org/licenses/MIT
+[dep-helpers]: https://github.com/pointybeard/helpers
+[dep-symphonycms]: https://github.com/pointybeard/symphonycms
+[dep-symphony-pdo]: https://github.com/pointybeard/symphony-pdo
+[dep-property-bag]: https://github.com/pointybeard/property-bag
+[dep-php_codesniffer]: https://github.com/squizlabs/php_codesniffer
+[dep-friendsofphp/php-cs-fixer]: https://github.com/friendsofphp/php-cs-fixer
+[dep-php-commitizen]: https://github.com/damianopetrungaro/php-commitizen
+[dep-php-parallel-lint]: https://github.com/php-parallel-lint/php-parallel-lint
+[ext-issues]: https://github.com/pointybeard/symphony-section-builder/issues
+[ext-Symphony]: http://getsymphony.com
+[ext-contributor]: https://github.com/pointybeard/symphony-section-builder/contributors
+[ext-docs]: https://github.com/pointybeard/symphony-section-builder/blob/master/.docs/toc.md
+[ext-scrutinizer]: https://scrutinizer-ci.com/g/pointybeard/symphony-section-builder/?branch=master
