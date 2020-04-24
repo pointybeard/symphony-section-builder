@@ -18,7 +18,16 @@ use pointybeard\Helpers\Functions\Flags;
 class Diff
 {
     public const FLAG_IGNORE_NOISY_PROPERTIES = 0x0001;
-    public static $noisyProperties = ['dateModifiedAtGMT', 'dateModifiedAt', 'dateCreatedAtGMT', 'dateCreatedAt', 'modificationAuthorId', 'authorId', 'sortOrder', 'location'];
+    public static $noisyProperties = [
+        'dateModifiedAtGMT',
+        'dateModifiedAt',
+        'dateCreatedAtGMT',
+        'dateCreatedAt',
+        'modificationAuthorId',
+        'authorId',
+        'sortOrder',
+        'location',
+    ];
 
     public static function setNoisyProperties(array $propertyNames = [])
     {
@@ -58,9 +67,9 @@ class Diff
 
             // New Section
             if (!($section instanceof Models\Section)) {
-                $result[] = (new Diff\Record())
-                    ->op(Diff\Record::OP_REMOVED)
-                    ->type(Diff\Record::TYPE_SECTION)
+                $result[] = (new Models\Diff\Record())
+                    ->op(Models\Diff\Record::OP_REMOVED)
+                    ->type(Models\Diff\Record::TYPE_SECTION)
                     ->nameOriginal($s->handle)
                     ->context(json_encode($s, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))
                 ;
@@ -79,9 +88,9 @@ class Diff
                             $valueNew = true == $valueNew ? 'true' : 'false';
                         }
 
-                        $result[] = (new Diff\Record())
-                            ->op(Diff\Record::OP_UPDATED)
-                            ->type(Diff\Record::TYPE_SECTION)
+                        $result[] = (new Models\Diff\Record())
+                            ->op(Models\Diff\Record::OP_UPDATED)
+                            ->type(Models\Diff\Record::TYPE_SECTION)
                             ->nameOriginal("{$section->handle}->$nameActual")
                             ->valueNew($valueNew)
                             ->valueOriginal($valueOriginal)
@@ -123,9 +132,9 @@ class Diff
                                     $valueNew = true == $valueNew ? 'true' : 'false';
                                 }
 
-                                $result[] = (new Diff\Record())
-                                    ->op(Diff\Record::OP_UPDATED)
-                                    ->type(Diff\Record::TYPE_FIELD)
+                                $result[] = (new Models\Diff\Record())
+                                    ->op(Models\Diff\Record::OP_UPDATED)
+                                    ->type(Models\Diff\Record::TYPE_FIELD)
                                     ->nameOriginal("{$section->handle}::{$field->elementName}->$nameActual")
                                     ->valueNew($valueNew)
                                     ->valueOriginal($valueOriginal)
@@ -134,9 +143,9 @@ class Diff
                             }
                         }
                     } catch (Exceptions\NoSuchFieldException $ex) {
-                        $result[] = (new Diff\Record())
-                            ->op(Diff\Record::OP_REMOVED)
-                            ->type(Diff\Record::TYPE_FIELD)
+                        $result[] = (new Models\Diff\Record())
+                            ->op(Models\Diff\Record::OP_REMOVED)
+                            ->type(Models\Diff\Record::TYPE_FIELD)
                             ->nameOriginal("{$section->handle}->{$f->elementName}")
                             ->context(json_encode($f, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))
                         ;
@@ -148,9 +157,9 @@ class Diff
                 // have been added
                 foreach ($section->fields() as $f) {
                     if (!in_array($f->elementName, $fieldsInComparisonData)) {
-                        $result[] = (new Diff\Record())
-                            ->op(Diff\Record::OP_ADDED)
-                            ->type(Diff\Record::TYPE_FIELD)
+                        $result[] = (new Models\Diff\Record())
+                            ->op(Models\Diff\Record::OP_ADDED)
+                            ->type(Models\Diff\Record::TYPE_FIELD)
                             ->nameNew("{$section->handle}->{$f->elementName}")
                             ->context((string) $f)
                         ;
@@ -164,9 +173,9 @@ class Diff
         // added
         foreach (Models\Section::all() as $s) {
             if (!in_array($s->handle, $sectionsInData)) {
-                $result[] = (new Diff\Record())
-                    ->op(Diff\Record::OP_ADDED)
-                    ->type(Diff\Record::TYPE_SECTION)
+                $result[] = (new Models\Diff\Record())
+                    ->op(Models\Diff\Record::OP_ADDED)
+                    ->type(Models\Diff\Record::TYPE_SECTION)
                     ->nameNew($s->handle)
                     ->context((string) $s)
                 ;
