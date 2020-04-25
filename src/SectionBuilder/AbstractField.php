@@ -36,7 +36,7 @@ abstract class AbstractField extends AbstractTableModel
         return $this instanceof Interfaces\FieldAssociationInterface;
     }
 
-    protected static function replaceTablePrefix(string $sql)
+    protected static function replaceTablePrefix(string $sql): string
     {
         $tablePrefix = SymphonyPDO\Loader::getCredentials()->tbl_prefix;
         if ('tbl_' !== $tablePrefix) {

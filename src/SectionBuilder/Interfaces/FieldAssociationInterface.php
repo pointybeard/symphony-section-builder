@@ -15,7 +15,7 @@ namespace pointybeard\Symphony\SectionBuilder\Interfaces;
 
 interface FieldAssociationInterface
 {
-    public function associationParentSectionId();
+    public function associationParentSectionId(): ?int;
 
-    public function associationParentSectionFieldId();
+    public function associationParentSectionFieldId(): ?int;
 }

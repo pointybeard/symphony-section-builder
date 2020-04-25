@@ -15,9 +15,13 @@ namespace pointybeard\Symphony\SectionBuilder\Interfaces;
 
 interface FieldInterface
 {
-    public function commit();
+    public function commit(): AbstractTableModel;
 
-    public function getEntriesDataCreateTableSyntax();
+    public function getEntriesDataCreateTableSyntax(): string;
 
-    public function hasAssociations();
+    public function hasAssociations(): bool;
+
+    public static function getFieldMappings(): \stdClass;
+
+    public function getDatabaseReadyData(): array;
 }

@@ -19,5 +19,5 @@ interface ActionInterface
 {
     public function addActionInputTypesToCollection(Input\InputCollection $collection): Input\InputCollection;
 
-    public function execute(Input\AbstractInputHandler $argv): bool;
+    public function execute(Input\AbstractInputHandler $argv): int;
 }
