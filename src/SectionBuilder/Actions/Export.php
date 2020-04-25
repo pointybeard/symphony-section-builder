@@ -33,7 +33,7 @@ class Export extends SectionBuilder\AbstractAction
         ;
     }
 
-    public function execute(Cli\Input\AbstractInputHandler $argv): bool
+    public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
         try {
             \SymphonyPDO\Loader::instance((object) $databaseCredentials);
@@ -61,8 +61,10 @@ class Export extends SectionBuilder\AbstractAction
             }
         } catch (Exception $ex) {
             SectionBuilder\Includes\Functions\output('Unable export data. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
+
+            return SectionBuilder\Application::RETURN_WITH_ERRORS;
         }
 
-        return true;
+        return SectionBuilder\Application::RETURN_SUCCESS;
     }
 }

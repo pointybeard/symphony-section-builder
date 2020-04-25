@@ -42,7 +42,7 @@ class Diff extends SectionBuilder\AbstractAction
         ;
     }
 
-    public function execute(Cli\Input\AbstractInputHandler $argv): bool
+    public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
         try {
             $count = (object) [
@@ -94,8 +94,10 @@ class Diff extends SectionBuilder\AbstractAction
             ;
         } catch (\Exception $ex) {
             SectionBuilder\Includes\Functions\output('A problem was encountered. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
+
+            return SectionBuilder\Application::RETURN_WITH_ERRORS;
         }
 
-        return true;
+        return SectionBuilder\Application::RETURN_SUCCESS;
     }
 }

@@ -17,6 +17,7 @@ use pointybeard\Helpers\Cli\Colour\Colour;
 use pointybeard\Helpers\Cli\Message\Message;
 use pointybeard\Helpers\Cli\Prompt\Prompt;
 use pointybeard\Helpers\Functions\Cli;
+use pointybeard\Symphony\SectionBuilder\Application;
 
 const OUTPUT_HEADING = 1;
 const OUTPUT_ERROR = 2;
@@ -33,43 +34,43 @@ if (!function_exists(__NAMESPACE__.'\output')) {
     function output(string $message, ?int $type = OUTPUT_INFO, ?int $flags = Message::FLAG_APPEND_NEWLINE): void
     {
         $output = (new Message())
-        ->message($message)
-        ->flags($flags)
-        ->foreground(Colour::FG_DEFAULT)
-        ->background(Colour::BG_DEFAULT)
-    ;
+            ->message($message)
+            ->flags($flags)
+            ->foreground(Colour::FG_DEFAULT)
+            ->background(Colour::BG_DEFAULT)
+        ;
 
         switch ($type) {
-        case OUTPUT_ERROR:
-            Cli\display_error_and_exit($message, 'CRITICAL ERROR!');
-            break;
+            case OUTPUT_ERROR:
+                Cli\display_error_and_exit($message, 'CRITICAL ERROR!');
+                break;
 
-        case OUTPUT_WARNING:
-            $output
-                ->message("WARNING! {$message}")
-                ->foreground(Colour::FG_RED)
-            ;
-            break;
+            case OUTPUT_WARNING:
+                $output
+                    ->message("WARNING! {$message}")
+                    ->foreground(Colour::FG_RED)
+                ;
+                break;
 
-        case OUTPUT_NOTICE:
-            $output->foreground(Colour::FG_YELLOW);
-            break;
+            case OUTPUT_NOTICE:
+                $output->foreground(Colour::FG_YELLOW);
+                break;
 
-        case OUTPUT_SUCCESS:
-            $output->foreground(Colour::FG_GREEN);
-            break;
+            case OUTPUT_SUCCESS:
+                $output->foreground(Colour::FG_GREEN);
+                break;
 
-        case OUTPUT_HEADING:
-            $output
-                ->foreground(Colour::FG_WHITE)
-                ->background(Colour::BG_BLUE)
-            ;
-            break;
+            case OUTPUT_HEADING:
+                $output
+                    ->foreground(Colour::FG_WHITE)
+                    ->background(Colour::BG_BLUE)
+                ;
+                break;
 
-        default:
-        case OUTPUT_INFO:
-            break;
-    }
+            default:
+            case OUTPUT_INFO:
+                break;
+        }
 
         $output->display();
     }
@@ -85,7 +86,7 @@ if (!function_exists(__NAMESPACE__.'\ask_to_proceed')) {
 
             if (preg_match($negative, $proceed)) {
                 output('Execution termined by user', OUTPUT_NOTICE);
-                exit(1);
+                exit(Application::RETURN_SUCCESS);
             } elseif (preg_match($affirmative, $proceed)) {
                 return FLAGS_YES;
             }
