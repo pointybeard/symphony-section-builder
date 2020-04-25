@@ -23,25 +23,28 @@ set_error_handler(static function ($severity, $message, $file, $line) {
     }
 });
 
-$possibleAutoloadLocations = [
-    __DIR__.'/../../vendor/autoload.php',
-    __DIR__.'/../vendor/autoload.php',
-    __DIR__.'/vendor/autoload.php'
-];
-
-$foundAutoloader = false;
-foreach($possibleAutoloadLocations as $location) {
-    if(true == file_exists($location)) {
-        $foundAutoloader = true;
-        break;
+// This might be run from a couple of different locations. Traverse up the folder
+// structure looking for vendor/autoload.php or autoload.php and stop if
+// its not found after AUTOLOAD_SEARCH_LIMIT iterations.
+define("AUTOLOAD_SEARCH_LIMIT", 4);
+$current = 0;
+$autoload = null;
+while($current < AUTOLOAD_SEARCH_LIMIT) {
+    $location = __DIR__ . str_repeat("/..", $current);
+    foreach([$location . '/vendor/', $location] as $path) {
+        $autoload = $path . '/autoload.php';
+        if(true == file_exists($autoload)) {
+            break 2;
+        }
     }
+    $current++;
 }
 
-if(false == $foundAutoloader) {
+if(null == $autoload) {
     throw new RuntimeException('ERROR: Unable to locate Composer autoload.php');
 }
 
-require_once $location;
+require_once $autoload;
 
 use pointybeard\Helpers\Functions\Cli;
 use pointybeard\Symphony\SectionBuilder;
