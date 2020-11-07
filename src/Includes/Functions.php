@@ -16,7 +16,6 @@ namespace pointybeard\Symphony\SectionBuilder\Includes\Functions;
 use pointybeard\Helpers\Cli\Colour\Colour;
 use pointybeard\Helpers\Cli\Message\Message;
 use pointybeard\Helpers\Cli\Prompt\Prompt;
-use pointybeard\Helpers\Functions\Cli;
 use pointybeard\Symphony\SectionBuilder\Application;
 
 const OUTPUT_HEADING = 1;
@@ -42,7 +41,10 @@ if (!function_exists(__NAMESPACE__.'\output')) {
 
         switch ($type) {
             case OUTPUT_ERROR:
-                Cli\display_error_and_exit($message, 'CRITICAL ERROR!');
+                $output
+                    ->message("CRITICAL ERROR! {$message}")
+                    ->foreground(Colour::FG_RED)
+                ;
                 break;
 
             case OUTPUT_WARNING:
