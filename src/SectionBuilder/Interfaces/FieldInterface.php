@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace pointybeard\Symphony\SectionBuilder\Interfaces;
 
+use pointybeard\Symphony\SectionBuilder;
+
 interface FieldInterface
 {
-    public function commit(): AbstractTableModel;
+    public function commit(): SectionBuilder\AbstractTableModel;
 
     public function getEntriesDataCreateTableSyntax(): string;
 
