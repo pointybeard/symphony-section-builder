@@ -43,7 +43,6 @@ class Import extends SectionBuilder\AbstractAction
     public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
         try {
-            SymphonyPDO\Loader::instance((object) $databaseCredentials);
             SectionBuilder\Import::fromJsonFile($argv->find('json'));
         } catch (Exception $ex) {
             SectionBuilder\Includes\Functions\output('Unable import data. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);

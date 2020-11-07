@@ -36,7 +36,6 @@ class Export extends SectionBuilder\AbstractAction
     public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
         try {
-            \SymphonyPDO\Loader::instance((object) $databaseCredentials);
             $output = ['sections' => []];
             foreach (SectionBuilder\Models\Section::all() as $section) {
                 $output['sections'][] = json_decode((string) $section, false);
