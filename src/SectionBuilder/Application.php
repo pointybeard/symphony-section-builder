@@ -362,6 +362,6 @@ final class Application
         /*
         Bootstrap is complete; now run the action
         */
-        return $action->execute($argv);
+        return $argv->find('action')->execute($argv);
     }
 }
