@@ -18,6 +18,7 @@ use pointybeard\Helpers\Cli\Colour\Colour;
 use pointybeard\Helpers\Functions;
 use pointybeard\Symphony\SectionBuilder;
 use pointybeard\Symphony\SectionBuilder\Models;
+use pointybeard\Helpers\Functions\Strings;
 
 class Diff extends SectionBuilder\AbstractAction
 {
@@ -30,14 +31,24 @@ class Diff extends SectionBuilder\AbstractAction
                     ->short('j')
                     ->flags(Cli\Input\AbstractInputType::FLAG_REQUIRED | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
                     ->description('Path to the input JSON data')
-                    ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
-                        // Make sure -j (--json) is a valid file that can be read
-                        if (false === Functions\Json\json_validate_file($context->find('json'), $code, $message)) {
-                            throw new SectionBuilder\Exceptions\SectionBuilderException(sprintf('The file specified via option --json does not exist or is an invalid JSON document. Returned: %s', $message));
-                        }
+                    ->validator(
+                        function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
+                            // Make sure -j (--json) is a valid file that can be read
+                            if (false === Functions\Json\json_validate_file($context->find('json'), $code, $message)) {
+                                throw new SectionBuilder\Exceptions\SectionBuilderException(sprintf('The file specified via option --json does not exist or is an invalid JSON document. Returned: %s', $message));
+                            }
 
-                        return $context->find('json');
-                    })
+                            return $context->find('json');
+                        }
+                    )
+            )
+            ->add(
+                Cli\Input\InputTypeFactory::build('LongOption')
+                    ->name('output')
+                    ->short('o')
+                    ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+                    ->description('save a PHP patch file with changes')
+                    ->default(null)
             )
         ;
     }
@@ -52,7 +63,11 @@ class Diff extends SectionBuilder\AbstractAction
                 'total' => 0,
             ];
 
+            $generatePatch = null !== $argv->find('output');
+            $patchBlocks = [];
+
             foreach (SectionBuilder\Diff::fromJsonFile($argv->find('json')) as $d) {
+
                 ++$count->total;
                 ++$count->{$d->op};
 
@@ -79,11 +94,15 @@ class Diff extends SectionBuilder\AbstractAction
                         ), Colour::FG_YELLOW).PHP_EOL;
                         break;
                 }
+
+                if(true == $generatePatch) {
+                    $patchBlocks[] = $d->generatePatch();
+                }
             }
 
             (new Cli\Message\Message())
                 ->message(sprintf(
-                    'Completed (%d total, %d added, %d updated, %d removed)',
+                    'Completed (%d total changes, %d added, %d updated, %d removed)',
                     $count->total,
                     $count->{Models\Diff\Record::OP_ADDED},
                     $count->{Models\Diff\Record::OP_UPDATED},
@@ -92,7 +111,57 @@ class Diff extends SectionBuilder\AbstractAction
                 ->foreground(Colour::FG_GREEN)
                 ->display()
             ;
+
+            if (true === $generatePatch) {
+                $patch = <<<PHP
+<?php
+declare(strict_types=1);
+
+include "vendor/autoload.php";
+
+use pointybeard\Symphony\SectionBuilder;
+use pointybeard\Symphony\SectionBuilder\Models;
+use pointybeard\Helpers\Cli;
+use pointybeard\Helpers\Cli\Colour\Colour;
+
+try {
+
+    {{BLOCKS}}
+
+    (new Cli\Message\Message())
+        ->message(sprintf(
+            'Patch completed successfully',
+        ))
+        ->foreground(Colour::FG_GREEN)
+        ->display()
+    ;
+
+} catch (\Exception \$ex) {
+    SectionBuilder\Includes\Functions\output(
+        'Patching failed. Returned: ' . \$ex->getMessage(),
+        SectionBuilder\Includes\Functions\OUTPUT_ERROR
+    );
+    exit(SectionBuilder\Application::RETURN_WITH_ERRORS);
+}
+
+exit(SectionBuilder\Application::RETURN_SUCCESS);
+PHP;
+
+                $file = (string)$argv->find('output');
+                file_put_contents(
+                    $file, 
+                    Strings\replace_placeholders_in_string(
+                        ['BLOCKS'],
+                        [implode(PHP_EOL . PHP_EOL, $patchBlocks)],
+                        $patch
+                    )
+                );
+                echo Colour::colourise(filesize($file).' bytes written to '.$file, Colour::FG_GREEN).PHP_EOL;
+            }
+
+
         } catch (\Exception $ex) {
+
             SectionBuilder\Includes\Functions\output('A problem was encountered. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
 
             return SectionBuilder\Application::RETURN_WITH_ERRORS;

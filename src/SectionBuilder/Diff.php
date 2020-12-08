@@ -18,6 +18,7 @@ use pointybeard\Helpers\Functions\Flags;
 class Diff
 {
     public const FLAG_IGNORE_NOISY_PROPERTIES = 0x0001;
+
     public static $noisyProperties = [
         'dateModifiedAtGMT',
         'dateModifiedAt',
@@ -34,7 +35,7 @@ class Diff
         self::$noisyProperties = $propertyNames;
     }
 
-    public static function fromJsonFile(string $file, int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
+    public static function fromJsonFile(string $file, ?int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
     {
         if (!is_readable($file)) {
             throw new Exceptions\SectionBuilderException(sprintf("The file '%s' is not readable.", $file));
@@ -43,7 +44,7 @@ class Diff
         return self::fromJsonString(file_get_contents($file));
     }
 
-    public static function fromJsonString(string $string, int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
+    public static function fromJsonString(string $string, ?int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
     {
         $json = json_decode($string);
         if (false == $json || null === $json) {
@@ -55,7 +56,7 @@ class Diff
         return self::fromObject($json);
     }
 
-    public static function fromObject(\stdClass $data, int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
+    public static function fromObject(\stdClass $data, ?int $flags = self::FLAG_IGNORE_NOISY_PROPERTIES): array
     {
         $result = [];
 

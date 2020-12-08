@@ -53,4 +53,49 @@ class Record
 
         return $this;
     }
+
+    public function generatePatch(): string
+    {
+        return $this->{"generatePatch" . ucfirst($this->op) . $this->type}();
+    }
+
+    private function generatePatchAddedSection(): string
+    {
+        return "";
+    }
+
+    private function generatePatchRemovedSection(): string
+    {
+        return "";
+    }
+
+    private function generatePatchRenamedSection(): string
+    {
+        return "";
+    }
+
+    private function generatePatchUpdatedSection(): string
+    {
+        return "";
+    }
+
+    private function generatePatchAddedField(): string
+    {
+        return "";
+    }
+
+    private function generatePatchRemovedField(): string
+    {
+        return "";
+    }
+
+    private function generatePatchRenamedField(): string
+    {
+        return "";
+    }
+
+    private function generatePatchUpdatedField(): string
+    {
+        return "";
+    }
 }
