@@ -15,7 +15,7 @@ namespace pointybeard\Symphony\SectionBuilder\Traits;
 
 use pointybeard\Symphony\SectionBuilder;
 
-trait hasFetchAssociatedFieldTrait
+trait HasFetchAssociatedFieldTrait
 {
     protected function fetchAssociatedField(string $fieldName): SectionBuilder\AbstractField
     {

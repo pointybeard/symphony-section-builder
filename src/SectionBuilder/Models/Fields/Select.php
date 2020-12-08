@@ -23,7 +23,7 @@ class Select extends AbstractField implements Interfaces\FieldInterface, Interfa
     const TYPE = 'select';
     const TABLE = 'tbl_fields_select';
 
-    use Traits\hasFetchAssociatedFieldTrait;
+    use Traits\HasFetchAssociatedFieldTrait;
 
     public function hasAssociations(): bool
     {

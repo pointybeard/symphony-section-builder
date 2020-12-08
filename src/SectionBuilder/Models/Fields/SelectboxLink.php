@@ -22,7 +22,7 @@ class SelectboxLink extends AbstractField implements Interfaces\FieldInterface, 
     const TYPE = 'selectbox_link';
     const TABLE = 'tbl_fields_selectbox_link';
 
-    use Traits\hasFetchAssociatedFieldTrait;
+    use Traits\HasFetchAssociatedFieldTrait;
 
     public static function getFieldMappings(): \stdClass
     {

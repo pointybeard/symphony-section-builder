@@ -22,7 +22,7 @@ class Association extends AbstractField implements Interfaces\FieldInterface, In
     const TYPE = 'association';
     const TABLE = 'tbl_fields_association';
 
-    use Traits\hasFetchAssociatedFieldTrait;
+    use Traits\HasFetchAssociatedFieldTrait;
 
     public static function getFieldMappings(): \stdClass
     {
