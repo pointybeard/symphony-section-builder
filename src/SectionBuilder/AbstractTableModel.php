@@ -31,7 +31,11 @@ abstract class AbstractTableModel extends PropertyBag
     const FLAG_FIELD = 0x0100;
     const FLAG_SECTION = 0x0200;
 
-    use Traits\hasToStringToJsonTrait;
+    public const FLAG_EXCLUDE_IDS = 0x0400;
+    public const FLAG_EXCLUDE_SORTORDER = 0x0800;
+    public const FLAG_EXCLUDE_AUTHOR_IDS = 0x1000;
+    public const FLAG_EXCLUDE_DATES = 0x2000;
+    public const FLAG_LESS = self::FLAG_EXCLUDE_IDS | self::FLAG_EXCLUDE_SORTORDER | self::FLAG_EXCLUDE_AUTHOR_IDS | self::FLAG_EXCLUDE_DATES;
 
     protected static $databaseFieldMapping = [];
 
@@ -151,5 +155,58 @@ abstract class AbstractTableModel extends PropertyBag
             static::class,
             $query
         ))->current();
+    }
+
+    protected static function recursiveRemoveFieldFromArray(array $data, ?int $flags) {
+
+        if (true == Flags\is_flag_set($flags, self::FLAG_EXCLUDE_IDS)) {
+            unset($data['id']);
+            unset($data['sectionId']);
+        }
+
+        if (true == Flags\is_flag_set($flags, self::FLAG_EXCLUDE_SORTORDER)) {
+            unset($data['sortOrder']);
+        }
+
+        if (true == Flags\is_flag_set($flags, self::FLAG_EXCLUDE_AUTHOR_IDS)) {
+            unset($data['authorId']);
+            unset($data['modificationAuthorId']);
+        }
+
+        if (true == Flags\is_flag_set($flags, self::FLAG_EXCLUDE_DATES)) {
+            unset($data['dateCreatedAt']);
+            unset($data['dateCreatedAtGMT']);
+            unset($data['dateModifiedAt']);
+            unset($data['dateModifiedAtGMT']);
+        }
+
+        foreach ($data as $name => $properties) {
+            if (true == is_array($properties)) {
+                $data[$name] = self::recursiveRemoveFieldFromArray($properties, $flags);
+            }
+        }
+
+        return $data;
+    }
+
+    protected static function removeIdFromArray(array $data): array
+    {
+        return self::recursiveRemoveFieldFromArray($data, self::FLAG_EXCLUDE_IDS);
+    }
+
+    public function __toJson(?int $flags = self::FLAG_EXCLUDE_IDS): string
+    {
+        $data = $this->__toArray();
+
+        if (null !== $flags) {
+            $data = self::recursiveRemoveFieldFromArray($data, $flags);
+        }
+
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
+    public function __toString()
+    {
+        return $this->__toJson();
     }
 }

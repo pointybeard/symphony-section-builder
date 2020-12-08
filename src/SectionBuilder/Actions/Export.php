@@ -27,8 +27,15 @@ class Export extends SectionBuilder\AbstractAction
                     ->name('output')
                     ->short('o')
                     ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-                    ->description('Save JSON export to this location')
+                    ->description('save JSON export to this location')
                     ->default(null)
+            )
+            ->add(
+                Cli\Input\InputTypeFactory::build('LongOption')
+                    ->name('less')
+                    ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL)
+                    ->description('reduces the amount of meta data included in the export e.g. creation dates')
+                    ->default(false)
             )
         ;
     }
@@ -38,7 +45,14 @@ class Export extends SectionBuilder\AbstractAction
         try {
             $output = ['sections' => []];
             foreach (SectionBuilder\Models\Section::all() as $section) {
-                $output['sections'][] = json_decode((string) $section, false);
+                $output['sections'][] = json_decode(
+                    $section->__toJson(
+                        true === $argv->find('less') 
+                            ? SectionBuilder\Models\Section::FLAG_LESS 
+                            : SectionBuilder\Models\Section::FLAG_EXCLUDE_IDS
+                    ),
+                    false
+                );
             }
 
             // #1 - Now that we have the sections, lets sort them based on dependency.
@@ -58,6 +72,7 @@ class Export extends SectionBuilder\AbstractAction
                 file_put_contents($file, $json);
                 echo Colour::colourise(filesize($file).' bytes written to '.$file, Colour::FG_GREEN).PHP_EOL;
             }
+
         } catch (Exception $ex) {
             SectionBuilder\Includes\Functions\output('Unable export data. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
 
