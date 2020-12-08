@@ -87,7 +87,7 @@ final class Application
                 Cli\Input\InputTypeFactory::build('LongOption')
                     ->name('manifest')
                     ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-                    ->description('Path to the manifest folder containing a config.php or config.json file. This is an alternative to providing database credentials directly, instead reading them from the config.')
+                    ->description('path to the manifest folder containing a config.php or config.json file. This is an alternative to providing database credentials directly, instead reading them from the config.')
                     ->default(null)
                     ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
                         $config = null;
@@ -134,7 +134,7 @@ final class Application
                 Cli\Input\InputTypeFactory::build('LongOption')
                     ->name('symphony')
                     ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
-                    ->description('Path to SymphonyCMS core.')
+                    ->description('path to SymphonyCMS core.')
                     ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
                         if (class_exists('Symphony')) {
                             (new Cli\Message\Message())
@@ -162,7 +162,7 @@ final class Application
                 Cli\Input\InputTypeFactory::build('Flag')
                     ->name('L')
                     ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL)
-                    ->description('View the software licence this script is released under'),
+                    ->description('view the software licence this script is released under'),
                 false,
                 Cli\Input\InputCollection::POSITION_PREPEND
             )
