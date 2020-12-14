@@ -287,7 +287,12 @@ class Section extends AbstractTableModel
             $this->isFieldsInitialised = true;
 
             $db = SymphonyPDO\Loader::instance();
-            $query = $db->prepare(sprintf('SELECT `id` FROM `%s` WHERE `parent_section` = :sectionId', AbstractField::TABLE));
+            $query = $db->prepare(
+                sprintf(
+                    'SELECT `id` FROM `%s` WHERE `parent_section` = :sectionId ORDER BY `sortorder` ASC',
+                    AbstractField::TABLE
+                )
+            );
             $query->bindParam(':sectionId', $sectionId, \PDO::PARAM_INT);
             $result = $query->execute();
 

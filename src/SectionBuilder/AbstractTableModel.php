@@ -134,7 +134,7 @@ abstract class AbstractTableModel extends PropertyBag
     {
         $db = SymphonyPDO\Loader::instance();
 
-        $query = $db->prepare(sprintf('SELECT * FROM `%s`', static::TABLE));
+        $query = $db->prepare(sprintf('SELECT * FROM `%s` ORDER BY `sortorder` ASC', static::TABLE));
         $result = $query->execute();
 
         return new ResultIterator(
