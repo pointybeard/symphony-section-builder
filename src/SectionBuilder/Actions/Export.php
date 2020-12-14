@@ -37,14 +37,31 @@ class Export extends SectionBuilder\AbstractAction
                     ->description('reduces the amount of meta data included in the export e.g. creation dates')
                     ->default(false)
             )
+            ->add(
+                Cli\Input\InputTypeFactory::build('LongOption')
+                    ->name('exclude')
+                    ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+                    ->description('comma delimited list of sections to skip.')
+                    ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
+                        $excludedSections = explode(",", (string)$context->find('exclude'));
+                        $excludedSections = array_map("trim", $excludedSections);
+                        return $excludedSections;
+                    })
+                    ->default(null)
+            )
         ;
     }
 
     public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
+        $excludedSections = $argv->find('exclude');
         try {
             $output = ['sections' => []];
             foreach (SectionBuilder\Models\Section::all() as $section) {
+                if(true == in_array((string)$section->handle(), $excludedSections)) {
+                    echo Colour::colourise('Skipping section '.(string)$section->handle(), Colour::FG_YELLOW).PHP_EOL;
+                    continue;
+                }
                 $output['sections'][] = json_decode(
                     $section->__toJson(
                         true === $argv->find('less') 
