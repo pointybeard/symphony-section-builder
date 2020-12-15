@@ -51,7 +51,7 @@ class Import extends AbstractOperation
         ;
 
         $result = [];
-        foreach ($sections as $s) {
+        foreach ($sections as $index => $s) {
             $s->dateCreatedAt = date(
                 'c',
                 isset($s->dateCreatedAt)
@@ -91,7 +91,7 @@ class Import extends AbstractOperation
                 $section = (new Models\Section())
                     ->name($s->name)
                     ->handle($s->handle)
-                    ->sortOrder($s->sortOrder)
+                    ->sortOrder($s->sortOrder ?? $index)
                     ->hideFromBackendNavigation($s->hideFromBackendNavigation)
                     ->allowFiltering($s->allowFiltering)
                     ->navigationGroup($s->navigationGroup)
@@ -106,7 +106,7 @@ class Import extends AbstractOperation
                 // This will help us handle circular dependancies later.
                 $deferred = [];
 
-                foreach ($s->fields as $f) {
+                foreach ($s->fields as $ii => $f) {
                     $deferField = false;
 
                     $class = AbstractField::fieldTypeToClassName($f->type);
@@ -120,6 +120,7 @@ class Import extends AbstractOperation
                         ->elementName($f->elementName)
                         ->location($f->location)
                         ->required($f->required)
+                        ->sortOrder($s->sortOrder ?? $index)
                         ->showColumn($f->showColumn)
                     ;
 
