@@ -37,13 +37,25 @@ class Import extends SectionBuilder\AbstractAction
                         return $context->find('json');
                     })
             )
+            ->add(
+                Cli\Input\InputTypeFactory::build('LongOption')
+                    ->name('skip-ordering')
+                    ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL)
+                    ->description('skips ordering of sections. Helpful for partial imports that throw an error about circular dependencies.')
+                    ->default(false)
+            )
         ;
     }
 
     public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
         try {
-            SectionBuilder\Import::fromJsonFile($argv->find('json'));
+            SectionBuilder\Import::fromJsonFile(
+                $argv->find('json'),
+                $argv->find('skip-ordering') === true
+                    ? SectionBuilder\Import::FLAG_SKIP_ORDERING
+                    : NULL
+            );
         } catch (Exception $ex) {
             SectionBuilder\Includes\Functions\output('Unable import data. Returned: '.$ex->getMessage(), SectionBuilder\Includes\Functions\OUTPUT_ERROR);
 
