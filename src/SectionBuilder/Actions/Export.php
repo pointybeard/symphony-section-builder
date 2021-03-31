@@ -95,9 +95,13 @@ class Export extends SectionBuilder\AbstractAction
             }
 
             // #1 - Now that we have the sections, lets sort them based on dependency.
-            $output['sections'] = SectionBuilder\AbstractOperation::orderSectionsByAssociations(
-                $output['sections']
-            );
+            try {
+                $output['sections'] = SectionBuilder\AbstractOperation::orderSectionsByAssociations(
+                    $output['sections']
+                );
+            } catch(SectionBuilder\Exceptions\SectionBuilderException $ex) {
+                echo Colour::colourise('WARNING: Unable to order sections due to circular dependency warning. You might need to re-order sections in the output manally.', Colour::FG_RED).PHP_EOL;
+            }
 
             $json = json_encode(
                 $output,
