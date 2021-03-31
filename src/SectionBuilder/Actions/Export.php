@@ -49,20 +49,41 @@ class Export extends SectionBuilder\AbstractAction
                     })
                     ->default([])
             )
+            ->add(
+                Cli\Input\InputTypeFactory::build('LongOption')
+                    ->name('limit')
+                    ->flags(Cli\Input\AbstractInputType::FLAG_OPTIONAL | Cli\Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+                    ->description('comma delimited list of sections to limit export to.')
+                    ->validator(function (Cli\Input\AbstractInputType $input, Cli\Input\AbstractInputHandler $context) {
+                        $limitToSections = explode(",", (string)$context->find('limit'));
+                        $limitToSections = array_map("trim", $limitToSections);
+                        return $limitToSections;
+                    })
+                    ->default([])
+            )
         ;
     }
 
     public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
         $excludedSections = $argv->find('exclude');
+        $limitToSections = $argv->find('limit');
 
         try {
             $output = ['sections' => []];
+
             foreach (SectionBuilder\Models\Section::all() as $section) {
+
                 if(true == in_array((string)$section->handle(), $excludedSections)) {
+                    echo Colour::colourise('Excluding section '.(string)$section->handle(), Colour::FG_YELLOW).PHP_EOL;
+                    continue;
+                }
+
+                if(false == empty($limitToSections) && false == in_array((string)$section->handle(), $limitToSections)) {
                     echo Colour::colourise('Skipping section '.(string)$section->handle(), Colour::FG_YELLOW).PHP_EOL;
                     continue;
                 }
+
                 $output['sections'][] = json_decode(
                     $section->__toJson(
                         true === $argv->find('less') 
