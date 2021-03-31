@@ -47,7 +47,7 @@ class Export extends SectionBuilder\AbstractAction
                         $excludedSections = array_map("trim", $excludedSections);
                         return $excludedSections;
                     })
-                    ->default(null)
+                    ->default([])
             )
         ;
     }
@@ -55,6 +55,7 @@ class Export extends SectionBuilder\AbstractAction
     public function execute(Cli\Input\AbstractInputHandler $argv): int
     {
         $excludedSections = $argv->find('exclude');
+
         try {
             $output = ['sections' => []];
             foreach (SectionBuilder\Models\Section::all() as $section) {
